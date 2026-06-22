@@ -142,7 +142,7 @@
     </main>
 
     {{-- FOOTER PREMIUM 4-COLUMN --}}
-    <footer class="bg-[#081018] border-t border-white/10 py-16">
+    <footer class="bg-[#081018] border-t border-white/10 py-16 mt-16">
         <div class="max-w-[1280px] mx-auto px-6">
             
             {{-- Footer Grid 4 Column --}}

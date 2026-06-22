@@ -141,7 +141,7 @@
 </section>
 {{-- END TRUST BADGES SECTION --}}
 {{-- START REKOMENDASI EVENT SECTION --}}
-<section class="py-10">
+<section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="flex items-center justify-between mb-6">
@@ -180,7 +180,7 @@
 </section>
 {{-- END REKOMENDASI EVENT SECTION --}}
 {{-- START KATEGORI EVENT SECTION --}}
-<section class="py-10 bg-[#050B14]/50">
+<section class="py-14 bg-[#050B14]/50">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <h2 class="text-3xl font-bold text-white mb-6 text-center">Kategori Event</h2>
@@ -244,7 +244,7 @@
 {{-- END KATEGORI EVENT SECTION --}}
 
 {{-- START EVENT TERDEKAT SECTION --}}
-<section class="py-10">
+<section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="flex items-center justify-between mb-6">
@@ -283,7 +283,7 @@
 </section>
 {{-- END EVENT TERDEKAT SECTION --}}
 {{-- START UPCOMING EVENT SECTION --}}
-<section class="py-10 bg-[#050B14]/50">
+<section class="py-14 bg-[#050B14]/50">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="flex items-center justify-between mb-6">
@@ -319,7 +319,7 @@
 {{-- END UPCOMING EVENT SECTION --}}
 
 {{-- START POPULAR EVENT SECTION --}}
-<section class="py-10">
+<section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="flex items-center justify-between mb-6">
@@ -357,7 +357,7 @@
 </section>
 {{-- END POPULAR EVENT SECTION --}}
 {{-- START TEMUKAN EVENT DI KOTAMU SECTION --}}
-<section class="mt-16 mb-16">
+<section class="py-16">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="bg-[#0B1220] rounded-[28px] p-10 border border-white/5">

@@ -12,7 +12,14 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                'navy-dark': '#050B14',
+                'navy-card': '#0B1220',
+                'navy-footer': '#081018',
+                'gold': '#F5C518',
+                'gold-dark': '#D4A017',
             },
         },
     },
