@@ -95,11 +95,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Event Featured
     Route::post('events/{event}/toggle-featured', [\App\Http\Controllers\Admin\EventController::class, 'toggleFeatured'])->name('events.toggle-featured');
     
-    // Event Duplicate
+     // Event Duplicate
     Route::post('events/{event}/duplicate', [\App\Http\Controllers\Admin\EventController::class, 'duplicate'])->name('events.duplicate');
+    
+        // Event Featured Page
+    Route::get('events-featured', [\App\Http\Controllers\Admin\EventController::class, 'featured'])->name('events.featured');
+    
+    // Event Categories
+    Route::get('categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories.index');
+    Route::post('categories', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
+    Route::put('categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::post('categories/{category}/toggle-active', [\App\Http\Controllers\Admin\CategoryController::class, 'toggleActive'])->name('categories.toggle-active');
     
     // ═══════════════════════════════════════════════════════════════
     // TRANSACTION MANAGEMENT
+
     // ═══════════════════════════════════════════════════════════════
     
     // Orders Management

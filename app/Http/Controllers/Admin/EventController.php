@@ -142,6 +142,35 @@ class EventController extends Controller
         }
     }
 
+    /**
+     * Show featured events
+     */
+    public function featured(Request $request)
+    {
+        $query = Event::with(['category', 'organizer'])
+            ->where('is_featured', true)
+            ->where('status', 'approved');
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by category
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $events = $query->orderBy('date', 'desc')->paginate(15);
+        $categories = \App\Models\EventCategory::all();
+
+        return view('admin.events.featured', compact('events', 'categories'));
+    }
+
     public function create()
     {
         $event = null;
