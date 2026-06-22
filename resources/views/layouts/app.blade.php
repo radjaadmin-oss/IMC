@@ -21,6 +21,19 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        
+        /* Force navbar links to be clickable */
+        nav a {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            position: relative !important;
+            z-index: 999 !important;
+        }
+        
+        /* Ensure navbar is on top */
+        nav {
+            pointer-events: auto !important;
+        }
     </style>
 </head>
 <body class="antialiased bg-[#050B14] text-white">
