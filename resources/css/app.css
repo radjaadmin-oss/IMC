@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Gradient Gold untuk Button */
+.gold-gradient {
+    background: linear-gradient(135deg, #D4AF37, #FFD700);
+}
+
+/* Card Dark */
+.card-dark {
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animasi Pulse untuk Badge */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
