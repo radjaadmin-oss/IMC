@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
 
         // 2. Panggil Seeders
         $this->call([
+            AdminUserSeeder::class,           // ✓ Tambahkan admin user
             EventCategorySeeder::class,
             UpdateEventSeeder::class,
             EventSeeder::class,
