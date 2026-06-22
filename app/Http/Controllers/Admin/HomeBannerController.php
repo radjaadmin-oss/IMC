@@ -13,13 +13,54 @@ class HomeBannerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $banners = HomeBanner::with('event')
-            ->orderBy('sort_order')
-            ->paginate(10);
+        // Statistics
+        $stats = [
+            'total' => HomeBanner::count(),
+            'active' => HomeBanner::where('status', 'active')->count(),
+            'inactive' => HomeBanner::where('status', 'inactive')->count(),
+            'linked' => HomeBanner::whereNotNull('event_id')->count(),
+        ];
 
-        return view('admin.banners.index', compact('banners'));
+        // Query with filters
+        $query = HomeBanner::with('event')->orderBy('sort_order');
+
+        // Search filter
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Event filter
+        if ($request->filled('event_id')) {
+            $query->where('event_id', $request->event_id);
+        }
+
+        $banners = $query->paginate(10)->withQueryString();
+
+        // Get all events for filter dropdown
+        $events = Event::where('date', '>=', now())->orderBy('date')->get();
+
+        return view('admin.banners.index', compact('banners', 'stats', 'events'));
+    }
+
+    /**
+     * Toggle banner status (active/inactive)
+     */
+    public function toggleStatus(HomeBanner $banner)
+    {
+        $banner->update([
+            'status' => $banner->status === 'active' ? 'inactive' : 'active'
+        ]);
+
+        return redirect()
+            ->route('admin.banners.index')
+            ->with('success', 'Banner status updated successfully!');
     }
 
     /**

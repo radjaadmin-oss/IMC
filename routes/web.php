@@ -79,6 +79,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     
     // Home Banners
     Route::resource('banners', HomeBannerController::class);
+    Route::post('banners/{banner}/toggle-status', [HomeBannerController::class, 'toggleStatus'])->name('banners.toggle-status');
     
     // ═══════════════════════════════════════════════════════════════
     // EVENT MANAGEMENT
