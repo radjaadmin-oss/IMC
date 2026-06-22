@@ -26,9 +26,9 @@
 <body class="antialiased bg-[#050B14] text-white">
 
     {{-- NAVBAR --}}
-    <nav class="sticky top-0 z-50 bg-[rgba(5,11,20,0.8)] backdrop-blur-xl border-b border-white/5">
+    <nav class="sticky top-0 z-50 bg-[rgba(5,11,20,0.85)] backdrop-blur-xl border-b border-white/5">
         <div class="max-w-[1280px] mx-auto px-6">
-            <div class="flex justify-between items-center h-18">
+            <div class="flex justify-between items-center h-[72px]">
                 
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="flex items-center gap-2 group">
@@ -63,6 +63,16 @@
 
                 {{-- Right Actions --}}
                 <div class="flex items-center gap-4">
+                    
+                    {{-- Search Icon --}}
+                    <button type="button" 
+                            class="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-white/5 hover:bg-[#F5C518]/10 border border-white/5 hover:border-[#F5C518]/30 text-gray-400 hover:text-[#F5C518] transition-all group"
+                            onclick="alert('Fitur pencarian segera hadir!')">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+
                     @auth
                         {{-- Tiket Saya --}}
                         <a href="{{ route('orders.index') }}" 
@@ -83,7 +93,7 @@
                             <form action="{{ route('logout') }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit" 
-                                        class="text-sm px-4 py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500 transition-all font-medium">
+                                        class="text-sm px-4 py-2 rounded-[14px] border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500 transition-all font-medium">
                                     Logout
                                 </button>
                             </form>
@@ -91,11 +101,11 @@
                     @else
                         {{-- Login & Register untuk Guest --}}
                         <a href="{{ route('login') }}" 
-                           class="text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                           class="text-sm px-5 py-2.5 rounded-[14px] border border-[#F5C518]/30 text-[#F5C518] hover:bg-[#F5C518]/10 hover:border-[#F5C518] transition-all font-semibold">
                             Masuk
                         </a>
                         <a href="{{ route('register') }}" 
-                           class="text-sm px-5 py-2 rounded-lg bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold hover:from-yellow-500 hover:to-yellow-700 transition-all shadow-lg hover:shadow-yellow-500/25">
+                           class="text-sm px-5 py-2.5 rounded-[14px] bg-gradient-to-r from-[#F5C518] to-[#D4A017] text-black font-bold hover:from-[#D4A017] hover:to-[#F5C518] transition-all shadow-lg hover:shadow-[#F5C518]/30 hover:scale-105">
                             Daftar
                         </a>
                     @endauth
