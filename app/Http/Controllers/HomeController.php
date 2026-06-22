@@ -10,10 +10,15 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // LOAD BANNERS FROM DATABASE
-        $banners = Banner::where('is_active', true)
-            ->orderBy('order')
-            ->get();
+        // LOAD BANNERS FROM DATABASE (with error handling)
+        try {
+            $banners = Banner::where('is_active', true)
+                ->orderBy('order')
+                ->get();
+        } catch (\Exception $e) {
+            // If banners table doesn't exist, use empty collection
+            $banners = collect([]);
+        }
 
         // ALL EVENTS (fallback)
         $events = Event::where('date', '>=', now())
