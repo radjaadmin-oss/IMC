@@ -141,11 +141,17 @@
 </section>
 {{-- END TRUST BADGES SECTION --}}
 {{-- START REKOMENDASI EVENT SECTION --}}
+@if($settings->show_recommended_events ?? true)
 <section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl font-bold text-white">Rekomendasi Event</h2>
+            <div>
+                <h2 class="text-3xl font-bold text-white">{{ $settings->recommended_events_title ?? 'Rekomendasi Event' }}</h2>
+                @if($settings->recommended_events_subtitle)
+                    <p class="text-gray-400 mt-1">{{ $settings->recommended_events_subtitle }}</p>
+                @endif
+            </div>
             <a href="{{ route('events.index') }}" class="flex items-center gap-2 text-[#F5C518] text-sm font-semibold hover:gap-3 transition-all">
                 Lihat Semua
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,12 +184,19 @@
         
     </div>
 </section>
+@endif
 {{-- END REKOMENDASI EVENT SECTION --}}
 {{-- START KATEGORI EVENT SECTION --}}
+@if($settings->show_categories ?? true)
 <section class="py-14 bg-[#050B14]/50">
     <div class="max-w-[1280px] mx-auto px-6">
         
-        <h2 class="text-3xl font-bold text-white mb-6 text-center">Kategori Event</h2>
+        <div class="text-center mb-6">
+            <h2 class="text-3xl font-bold text-white">{{ $settings->categories_title ?? 'Kategori Event' }}</h2>
+            @if($settings->categories_subtitle)
+                <p class="text-gray-400 mt-2">{{ $settings->categories_subtitle }}</p>
+            @endif
+        </div>
         
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
             
@@ -241,14 +254,21 @@
         
     </div>
 </section>
+@endif
 {{-- END KATEGORI EVENT SECTION --}}
 
 {{-- START EVENT TERDEKAT SECTION --}}
+@if($settings->show_nearest_events ?? true)
 <section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl font-bold text-white">Event Terdekat</h2>
+            <div>
+                <h2 class="text-3xl font-bold text-white">{{ $settings->nearest_events_title ?? 'Event Terdekat' }}</h2>
+                @if($settings->nearest_events_subtitle)
+                    <p class="text-gray-400 mt-1">{{ $settings->nearest_events_subtitle }}</p>
+                @endif
+            </div>
             <a href="{{ route('events.index') }}" class="flex items-center gap-2 text-[#F5C518] text-sm font-semibold hover:gap-3 transition-all">
                 Lihat Event Lainnya
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -281,13 +301,20 @@
         
     </div>
 </section>
+@endif
 {{-- END EVENT TERDEKAT SECTION --}}
 {{-- START UPCOMING EVENT SECTION --}}
+@if($settings->show_upcoming_events ?? true)
 <section class="py-14 bg-[#050B14]/50">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl font-bold text-white">Upcoming Event</h2>
+            <div>
+                <h2 class="text-3xl font-bold text-white">{{ $settings->upcoming_events_title ?? 'Upcoming Event' }}</h2>
+                @if($settings->upcoming_events_subtitle)
+                    <p class="text-gray-400 mt-1">{{ $settings->upcoming_events_subtitle }}</p>
+                @endif
+            </div>
             <a href="{{ route('events.index') }}" class="flex items-center gap-2 text-[#F5C518] text-sm font-semibold hover:gap-3 transition-all">
                 Lihat Semua
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,14 +343,21 @@
         
     </div>
 </section>
+@endif
 {{-- END UPCOMING EVENT SECTION --}}
 
 {{-- START POPULAR EVENT SECTION --}}
+@if($settings->show_popular_events ?? true)
 <section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl font-bold text-white">Popular Event</h2>
+            <div>
+                <h2 class="text-3xl font-bold text-white">{{ $settings->popular_events_title ?? 'Popular Event' }}</h2>
+                @if($settings->popular_events_subtitle)
+                    <p class="text-gray-400 mt-1">{{ $settings->popular_events_subtitle }}</p>
+                @endif
+            </div>
             <a href="{{ route('events.index', ['sort' => 'popular']) }}" class="flex items-center gap-2 text-[#F5C518] text-sm font-semibold hover:gap-3 transition-all">
                 Lihat Semua
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -355,16 +389,18 @@
         
     </div>
 </section>
+@endif
 {{-- END POPULAR EVENT SECTION --}}
 {{-- START TEMUKAN EVENT DI KOTAMU SECTION --}}
+@if($settings->show_regions ?? true)
 <section class="py-16">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="bg-[#0B1220] rounded-[28px] p-10 border border-white/5">
             
-            <h2 class="text-3xl font-bold text-white mb-2 text-center">Temukan Event Menarik di Kotamu</h2>
+            <h2 class="text-3xl font-bold text-white mb-2 text-center">{{ $settings->regions_title ?? 'Temukan Event Menarik di Kotamu' }}</h2>
             <p class="text-gray-400 text-center mb-8 max-w-2xl mx-auto">
-                Jelajahi berbagai event seru di kota-kota besar Indonesia. Pilih kotamu dan temukan pengalaman tak terlupakan!
+                {{ $settings->regions_subtitle ?? 'Jelajahi berbagai event seru di kota-kota besar Indonesia. Pilih kotamu dan temukan pengalaman tak terlupakan!' }}
             </p>
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-5 lg:gap-6">
@@ -427,6 +463,7 @@
         
     </div>
 </section>
+@endif
 {{-- END TEMUKAN EVENT DI KOTAMU SECTION --}}
 
 @endsection
