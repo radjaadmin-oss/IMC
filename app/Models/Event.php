@@ -12,9 +12,10 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-        'category_id', 'title', 'description', 'location',
+        'category_id', 'organizer_id', 'title', 'description', 'location',
         'date', 'early_bird_end', 'time', 'price', 'quota', 
         'sold_count', 'views', 'is_featured', 'is_free', 'image',
+        'status', // pending, approved, rejected
         'has_ticket_categories',
         // Section Placement
         'show_in_recommended',
@@ -42,6 +43,11 @@ class Event extends Model
         return $this->belongsTo(EventCategory::class, 'category_id');
     }
 
+    public function organizer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'organizer_id');
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
@@ -61,6 +67,21 @@ class Event extends Model
     public function scopeFree($query)
     {
         return $query->where('is_free', true);
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where('status', 'rejected');
     }
 
     public function scopeUpcoming($query)

@@ -11,10 +11,135 @@ use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::orderBy('date', 'desc')->paginate(15);
-        return view('admin.events.index', compact('events'));
+        $query = Event::with(['category', 'organizer']);
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by category
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Filter by featured
+        if ($request->filled('is_featured')) {
+            $query->where('is_featured', $request->is_featured);
+        }
+
+        $events = $query->orderBy('date', 'desc')->paginate(15);
+        $categories = \App\Models\EventCategory::all();
+
+        return view('admin.events.index', compact('events', 'categories'));
+    }
+
+    /**
+     * Show pending events for approval
+     */
+    public function pending(Request $request)
+    {
+        $query = Event::with(['category', 'organizer'])->where('status', 'pending');
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        $events = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        return view('admin.events.pending', compact('events'));
+    }
+
+    /**
+     * Approve event
+     */
+    public function approve(Event $event)
+    {
+        $event->update(['status' => 'approved']);
+
+        return back()->with('success', 'Event berhasil diapprove!');
+    }
+
+    /**
+     * Reject event
+     */
+    public function reject(Event $event, Request $request)
+    {
+        $request->validate([
+            'rejection_reason' => 'nullable|string|max:500'
+        ]);
+
+        $event->update([
+            'status' => 'rejected',
+            'rejection_reason' => $request->rejection_reason
+        ]);
+
+        return back()->with('success', 'Event berhasil direject!');
+    }
+
+    /**
+     * Toggle featured status
+     */
+    public function toggleFeatured(Event $event)
+    {
+        $event->update(['is_featured' => !$event->is_featured]);
+
+        $message = $event->is_featured 
+            ? 'Event berhasil ditandai sebagai Featured!' 
+            : 'Event berhasil dihapus dari Featured!';
+
+        return back()->with('success', $message);
+    }
+
+    /**
+     * Duplicate event
+     */
+    public function duplicate(Event $event)
+    {
+        DB::beginTransaction();
+        try {
+            // Duplicate event
+            $newEvent = $event->replicate();
+            $newEvent->title = $event->title . ' (Copy)';
+            $newEvent->status = 'pending';
+            $newEvent->is_featured = false;
+            $newEvent->sold_count = 0;
+            $newEvent->views = 0;
+            $newEvent->save();
+
+            // Duplicate ticket categories if exists
+            if ($event->has_ticket_categories) {
+                foreach ($event->ticketCategories as $category) {
+                    $newCategory = $category->replicate();
+                    $newCategory->event_id = $newEvent->id;
+                    $newCategory->save();
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('admin.events.edit', $newEvent)
+                ->with('success', 'Event berhasil diduplikasi! Silakan edit dan publish.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal menduplikasi event: ' . $e->getMessage());
+        }
     }
 
     public function create()

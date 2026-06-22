@@ -87,6 +87,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Events Management
     Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
     
+    // Event Approval
+    Route::get('events-pending', [\App\Http\Controllers\Admin\EventController::class, 'pending'])->name('events.pending');
+    Route::post('events/{event}/approve', [\App\Http\Controllers\Admin\EventController::class, 'approve'])->name('events.approve');
+    Route::post('events/{event}/reject', [\App\Http\Controllers\Admin\EventController::class, 'reject'])->name('events.reject');
+    
+    // Event Featured
+    Route::post('events/{event}/toggle-featured', [\App\Http\Controllers\Admin\EventController::class, 'toggleFeatured'])->name('events.toggle-featured');
+    
+    // Event Duplicate
+    Route::post('events/{event}/duplicate', [\App\Http\Controllers\Admin\EventController::class, 'duplicate'])->name('events.duplicate');
+    
     // ═══════════════════════════════════════════════════════════════
     // TRANSACTION MANAGEMENT
     // ═══════════════════════════════════════════════════════════════
