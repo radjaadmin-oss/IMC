@@ -31,11 +31,11 @@
                                     </picture>
                                     
                                     {{-- Gradient Overlay (optional) --}}
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
                                     
                                     {{-- Banner Title (optional, hanya jika ada) --}}
                                     @if($banner->title && strlen($banner->title) > 0 && $banner->title !== 'promosi')
-                                        <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                                        <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 pointer-events-none">
                                             <div class="max-w-7xl mx-auto">
                                                 <h2 class="text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tight drop-shadow-2xl">
                                                     {{ $banner->title }}
@@ -546,9 +546,24 @@ document.addEventListener('DOMContentLoaded', function() {
     display: block;
 }
 
+/* Make sure links in slides are clickable */
+.hero-swiper .swiper-slide a {
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+}
+
+/* Navigation buttons should not block banner clicks */
+.hero-swiper .swiper-button-prev,
+.hero-swiper .swiper-button-next {
+    z-index: 10;
+    pointer-events: auto;
+}
+
 /* Pagination Bullets */
 .hero-swiper .swiper-pagination {
     bottom: 20px !important;
+    z-index: 10;
 }
 
 .hero-swiper .swiper-pagination-bullet {
@@ -558,9 +573,10 @@ document.addEventListener('DOMContentLoaded', function() {
     height: 10px;
     border-radius: 50%;
     transition: all 0.3s ease;
+    pointer-events: auto;
 }
 
-.hero-swiper .swiper-pagination-bullet-active {
+.hero-swiper .swiper-pagination-bullet-active {ve {
     background: #F5C518;
     opacity: 1;
     width: 32px;
