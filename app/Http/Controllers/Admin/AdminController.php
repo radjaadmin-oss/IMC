@@ -61,6 +61,28 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
+        // Revenue Chart Data (Last 30 Days)
+        $revenueChartLabels = [];
+        $revenueChartData = [];
+        
+        for ($i = 29; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $revenueChartLabels[] = $date->format('d M');
+            
+            $dailyRevenue = Order::where('status', 'paid')
+                ->whereDate('created_at', $date->toDateString())
+                ->sum('total_price');
+            
+            $revenueChartData[] = $dailyRevenue;
+        }
+
+        // Payment Status Statistics
+        $paymentStats = [
+            'paid' => Order::where('status', 'paid')->count(),
+            'pending' => Order::where('status', 'pending')->count(),
+            'expired' => Order::where('status', 'expired')->count(),
+        ];
+
         return view('admin.dashboard', compact(
             'totalEvents',
             'activeEvents',
@@ -74,7 +96,10 @@ class AdminController extends Controller
             'totalRevenue',
             'latestOrders',
             'topEvents',
-            'upcomingEvents'
+            'upcomingEvents',
+            'revenueChartLabels',
+            'revenueChartData',
+            'paymentStats'
         ));
     }
 
