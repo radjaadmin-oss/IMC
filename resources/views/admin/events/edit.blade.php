@@ -1,9 +1,14 @@
-@extends('layouts.admin')
+@extends('layouts.admin-master')
 
-@section('page-title', 'Edit Event')
-@section('page-subtitle', 'Ubah detail event')
+@section('title', 'Edit Event')
 
 @section('content')
+
+{{-- Header --}}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">Edit Event</h1>
+    <p class="text-gray-400 mt-1">Ubah detail event</p>
+</div>
 
 <div class="max-w-4xl">
     
@@ -96,6 +101,27 @@
                                      text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-colors resize-none"
                               placeholder="Jelaskan detail event...">{{ old('description', $event->description) }}</textarea>
                     @error('description')
+                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Event Category --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300 mb-2">
+                        Kategori Event <span class="text-red-400">*</span>
+                    </label>
+                    <select name="category_id" 
+                            class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('category_id') border-red-500 @else border-white/10 @enderror 
+                                   text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+                            required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach(\App\Models\EventCategory::where('is_active', true)->orderBy('name')->get() as $cat)
+                            <option value="{{ $cat->id }}" {{ old('category_id', $event->category_id) == $cat->id ? 'selected' : '' }}>
+                                {{ $cat->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
                         <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
                     @enderror
                 </div>

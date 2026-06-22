@@ -1,9 +1,14 @@
-@extends('layouts.admin')
+@extends('layouts.admin-master')
 
-@section('page-title', 'Tambah Event')
-@section('page-subtitle', 'Buat event baru')
+@section('title', 'Tambah Event')
 
 @section('content')
+
+{{-- Header --}}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-white">Tambah Event</h1>
+    <p class="text-gray-400 mt-1">Buat event baru</p>
+</div>
 
 <div class="max-w-4xl">
     
@@ -95,6 +100,27 @@
                                      text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-colors resize-none"
                               placeholder="Jelaskan detail event...">{{ old('description') }}</textarea>
                     @error('description')
+                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Event Category --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300 mb-2">
+                        Kategori Event <span class="text-red-400">*</span>
+                    </label>
+                    <select name="category_id" 
+                            class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('category_id') border-red-500 @else border-white/10 @enderror 
+                                   text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+                            required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach(\App\Models\EventCategory::where('is_active', true)->orderBy('name')->get() as $cat)
+                            <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                                {{ $cat->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
                         <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
@@ -249,6 +275,94 @@
                     @error('image')
                         <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
                     @enderror
+                </div>
+
+                {{-- Homepage Section Placement --}}
+                <div class="bg-white/5 rounded-xl border border-white/10 p-6">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"/>
+                        </svg>
+                        📍 Penempatan di Homepage
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-6">Pilih section mana event ini akan ditampilkan di halaman utama</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        {{-- Rekomendasi Event --}}
+                        <label class="flex items-start gap-3 p-4 rounded-lg bg-white/5 border border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors">
+                            <input type="checkbox" 
+                                   name="show_in_recommended"
+                                   value="1"
+                                   {{ old('show_in_recommended') ? 'checked' : '' }}
+                                   class="mt-1 w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-900">
+                            <div class="flex-1">
+                                <div class="text-white font-semibold flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    Rekomendasi Event
+                                </div>
+                                <p class="text-gray-400 text-xs mt-1">Event pilihan editor yang direkomendasikan</p>
+                            </div>
+                        </label>
+
+                        {{-- Event Terdekat --}}
+                        <label class="flex items-start gap-3 p-4 rounded-lg bg-white/5 border border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors">
+                            <input type="checkbox" 
+                                   name="show_in_nearest"
+                                   value="1"
+                                   {{ old('show_in_nearest') ? 'checked' : '' }}
+                                   class="mt-1 w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-900">
+                            <div class="flex-1">
+                                <div class="text-white font-semibold flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    Event Terdekat
+                                </div>
+                                <p class="text-gray-400 text-xs mt-1">Event yang dekat dari tanggal hari ini</p>
+                            </div>
+                        </label>
+
+                        {{-- Upcoming Event --}}
+                        <label class="flex items-start gap-3 p-4 rounded-lg bg-white/5 border border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors">
+                            <input type="checkbox" 
+                                   name="show_in_upcoming"
+                                   value="1"
+                                   {{ old('show_in_upcoming') ? 'checked' : '' }}
+                                   class="mt-1 w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-900">
+                            <div class="flex-1">
+                                <div class="text-white font-semibold flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    Upcoming Event
+                                </div>
+                                <p class="text-gray-400 text-xs mt-1">Event yang akan datang dalam waktu dekat</p>
+                            </div>
+                        </label>
+
+                        {{-- Popular Event --}}
+                        <label class="flex items-start gap-3 p-4 rounded-lg bg-white/5 border border-white/10 hover:border-purple-500/50 cursor-pointer transition-colors">
+                            <input type="checkbox" 
+                                   name="show_in_popular"
+                                   value="1"
+                                   {{ old('show_in_popular') ? 'checked' : '' }}
+                                   class="mt-1 w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-900">
+                            <div class="flex-1">
+                                <div class="text-white font-semibold flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Popular Event
+                                </div>
+                                <p class="text-gray-400 text-xs mt-1">Event paling populer dan banyak diminati</p>
+                            </div>
+                        </label>
+
+                    </div>
                 </div>
 
                 {{-- Submit Buttons --}}
