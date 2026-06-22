@@ -111,11 +111,11 @@
                     </label>
                     <select name="category_id" 
                             class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('category_id') border-red-500 @else border-white/10 @enderror 
-                                   text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+                                   text-white focus:outline-none focus:border-[#D4AF37] transition-colors category-select"
                             required>
-                        <option value="">-- Pilih Kategori --</option>
+                        <option value="" class="bg-[#0B1220] text-gray-400">-- Pilih Kategori --</option>
                         @foreach(\App\Models\EventCategory::where('is_active', true)->orderBy('name')->get() as $cat)
-                            <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                            <option value="{{ $cat->id }}" class="bg-[#0B1220] text-white" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
                                 {{ $cat->name }}
                             </option>
                         @endforeach
@@ -392,6 +392,31 @@
 </div>
 
 @endsection
+
+@push('styles')
+<style>
+/* Custom styling for category select dropdown */
+.category-select option {
+    background-color: #0B1220 !important;
+    color: #ffffff !important;
+    padding: 10px !important;
+}
+
+.category-select option:hover {
+    background-color: #1a2332 !important;
+    color: #D4AF37 !important;
+}
+
+.category-select option[value=""] {
+    color: #9CA3AF !important;
+}
+
+/* Fix untuk browser yang tidak support option styling */
+.category-select {
+    color-scheme: dark;
+}
+</style>
+@endpush
 
 @push('scripts')
 <script>
