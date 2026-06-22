@@ -42,14 +42,21 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // Orders
+    // Orders - My Orders (perlu login untuk lihat daftar order)
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::get('/events/{event}/order', [OrderController::class, 'create'])->name('orders.create');
-    Route::post('/events/{event}/order', [OrderController::class, 'store'])->name('orders.store');
-    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
-    Route::post('/orders/{order}/upload-payment', [OrderController::class, 'uploadPaymentProof'])->name('orders.upload-payment');
 });
+
+// ═══════════════════════════════════════════════════════════════
+// GUEST CHECKOUT ROUTES (TIDAK perlu login)
+// ═══════════════════════════════════════════════════════════════
+// Guest bisa checkout tanpa login
+Route::get('/events/{event}/order', [OrderController::class, 'create'])->name('orders.create');
+Route::post('/events/{event}/order', [OrderController::class, 'store'])->name('orders.store');
+
+// Guest bisa lihat order detail dan upload payment via order code
+Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+Route::post('/orders/{order}/upload-payment', [OrderController::class, 'uploadPaymentProof'])->name('orders.upload-payment');
+Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
 // ═══════════════════════════════════════════════════════════════
 // ADMIN ROUTES (perlu login + role admin)

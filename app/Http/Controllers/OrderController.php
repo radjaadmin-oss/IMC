@@ -14,6 +14,11 @@ class OrderController extends Controller
 {
     public function index()
     {
+        // Only logged-in users can view their orders list
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Silakan login untuk melihat daftar pesanan Anda');
+        }
+
         $orders = Auth::user()->orders()
             ->with(['event', 'ticketCategory'])
             ->latest()
@@ -90,10 +95,10 @@ class OrderController extends Controller
                 
                 $totalPrice = $price * $request->quantity;
                 
-                // Create order
+                // Create order (support both guest and logged-in users)
                 $order = Order::create([
                     'order_code' => Order::generateOrderCode(),
-                    'user_id' => Auth::id(),
+                    'user_id' => Auth::id(), // NULL for guest, user ID for logged-in users
                     'event_id' => $event->id,
                     'ticket_category_id' => $ticketCategoryId,
                     'quantity' => $request->quantity,
@@ -122,7 +127,7 @@ class OrderController extends Controller
                 }
                 
                 return redirect()->route('orders.show', $order)
-                    ->with('success', 'Pesanan berhasil dibuat! Silakan lakukan pembayaran dalam 24 jam.');
+                    ->with('success', 'Pesanan berhasil dibuat! Silakan lakukan pembayaran dalam 24 jam. Cek email Anda untuk detail pesanan.');
             });
             
         } catch (\Exception $e) {
@@ -134,9 +139,10 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        // Pastikan user hanya bisa melihat ordernya sendiri
-        if ($order->user_id !== Auth::id()) {
-            abort(403);
+        // Guest users can view their order (no auth required)
+        // Logged-in users can only view their own orders
+        if (Auth::check() && $order->user_id !== null && $order->user_id !== Auth::id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini');
         }
 
         $order->load('event', 'ticketCategory');
@@ -145,9 +151,10 @@ class OrderController extends Controller
 
     public function cancel(Order $order)
     {
-        // Pastikan user hanya bisa cancel ordernya sendiri
-        if ($order->user_id !== Auth::id()) {
-            abort(403);
+        // Guest users can cancel their order (no auth required)
+        // Logged-in users can only cancel their own orders
+        if (Auth::check() && $order->user_id !== null && $order->user_id !== Auth::id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini');
         }
 
         // Cek status order
@@ -184,9 +191,10 @@ class OrderController extends Controller
 
     public function uploadPaymentProof(Request $request, Order $order)
     {
-        // Pastikan user hanya bisa upload untuk ordernya sendiri
-        if ($order->user_id !== Auth::id()) {
-            abort(403);
+        // Guest users can upload payment proof (no auth required)
+        // Logged-in users can only upload for their own orders
+        if (Auth::check() && $order->user_id !== null && $order->user_id !== Auth::id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini');
         }
 
         // Cek status order

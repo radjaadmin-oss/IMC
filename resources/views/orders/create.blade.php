@@ -211,11 +211,10 @@
                         </span>
                     </button>
 
-                    @guest
-                        <p class="text-center text-xs text-gray-600">
-                            Sudah punya akun? <a href="{{ route('login') }}" class="text-[#D4AF37] hover:underline">Login di sini</a>
-                        </p>
-                    @endguest
+                    <p class="text-center text-xs text-gray-500 mt-3">
+                        ✅ Checkout tanpa registrasi<br>
+                        Detail pesanan akan dikirim ke email Anda
+                    </p>
                 </div>
             </div>
 
