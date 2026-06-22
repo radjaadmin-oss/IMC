@@ -15,21 +15,26 @@
 | **Event Management** | ✅ PASS | 100% | 0 |
 | **Event Categories** | ✅ PASS | 100% | 0 |
 | **User Management** | ⚠️ PASS | 85% | 1 (Missing DB columns) |
+| **Order & Payment** | 🔴 **FAIL** | **70%** | **3 (Quota, Payment, Email)** |
 | **Authentication** | ⏳ PENDING | - | - |
 | **Database Schema** | ⏳ PENDING | - | - |
 | **Frontend (UI/UX)** | ⏳ PENDING | - | - |
 | **Routes** | ⏳ PENDING | - | - |
 | **Security** | ⏳ PENDING | - | - |
-| **Order/Payment** | ⏳ PENDING | - | - |
 
-**Overall Readiness:** 🟡 **80% READY** (4/10 audits completed)
+**Overall Readiness:** 🔴 **70% READY** (5/10 audits completed)  
+⚠️ **WARNING:** Critical bugs found in Order system - NOT PRODUCTION READY
 
-**EXCELLENT PROGRESS!** 🎉  
-**4 out of 10 audits completed** with excellent scores:
+**CRITICAL ISSUES FOUND!** 🚨  
+**5 out of 10 audits completed:**
 - ✅ **Event Management:** 100/100 (PERFECT)
 - ✅ **Event Categories:** 100/100 (PERFECT)
 - ✅ **Homepage:** 95/100 (Excellent)
-- ⚠️ **User Management:** 85/100 (1 critical issue: missing DB columns)
+- ⚠️ **User Management:** 85/100 (1 issue: missing DB columns)
+- 🔴 **Order & Payment:** 70/100 (3 CRITICAL issues)
+
+**⚠️ PRODUCTION BLOCKER:**  
+Order system has critical bugs (quota management broken, no payment gateway, no email notifications)
 
 ---
 
@@ -1340,10 +1345,668 @@ Admin dashboard likely displays user counts and recent registrations.
 
 ---
 
-## ⏳ AUDIT #5: AUTHENTICATION
+## ✅ AUDIT #5: ORDER & PAYMENT SYSTEM
 
-**Status:** ⏳ **PENDING**  
-**To Be Audited:** Login, Register, Logout, Password Reset, Email Verification
+**Status:** ⚠️ **PARTIAL PASS**  
+**Score:** 🎯 **70/100** - Functional but Missing Critical Features
+
+**Summary:** Order management system with user checkout flow and admin order management. Basic payment tracking implemented but **missing quota management, payment gateway integration, and email notifications**.
+
+---
+
+### ✅ Database Schema (15/20)
+**Good Foundation with Missing Payment Fields**
+
+**Orders Table Structure:**
+```sql
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER NULL REFERENCES users(id) ON DELETE SET NULL,
+    event_id INTEGER NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    ticket_category_id INTEGER NULL REFERENCES ticket_categories(id) ON DELETE SET NULL,
+    order_code VARCHAR(255) UNIQUE NOT NULL,
+    quantity INTEGER NOT NULL,
+    total_price DECIMAL(12,2) NOT NULL,
+    status VARCHAR(255) DEFAULT 'confirmed', -- confirmed, cancelled
+    attendee_name VARCHAR(255) NOT NULL,
+    attendee_email VARCHAR(255) NOT NULL,
+    attendee_phone VARCHAR(255) NOT NULL,
+    -- Payment fields (added via migration 2026_06_22_072652)
+    payment_status VARCHAR(255) DEFAULT 'pending', -- pending, paid, expired
+    payment_expired_at TIMESTAMP NULL,
+    paid_at TIMESTAMP NULL,
+    payment_method VARCHAR(255) NULL, -- bank_transfer, e-wallet, credit_card
+    payment_proof TEXT NULL,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+```
+
+**Ticket Categories Table:**
+```sql
+CREATE TABLE ticket_categories (
+    id INTEGER PRIMARY KEY,
+    event_id INTEGER NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,  -- Early Bird, Presale, Regular, VIP
+    description TEXT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    quota INTEGER NOT NULL,
+    sold INTEGER DEFAULT 0,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+```
+
+**Foreign Keys:**
+- ✅ `user_id` → users (nullable, set null on delete)
+- ✅ `event_id` → events (cascade on delete)
+- ✅ `ticket_category_id` → ticket_categories (nullable, set null on delete)
+
+**⚠️ Issues:**
+- Payment fields added via separate migration (not atomic)
+- No indexes on `order_code`, `payment_status`, `event_id` (performance)
+- No enum constraint for `status` and `payment_status`
+- Missing `ticket_type` column (single vs multiple category mode unclear)
+
+**Score Deduction:** -5 points for missing indexes and non-atomic schema.
+
+---
+
+### ✅ Order Model (18/20)
+**Well-Structured with Good Accessors**
+
+**File:** `app/Models/Order.php`
+
+**Fillable Fields:**
+```php
+protected $fillable = [
+    'user_id', 'event_id', 'ticket_category_id', 'order_code',
+    'quantity', 'total_price', 'status', 'payment_status',
+    'payment_expired_at', 'paid_at', 'payment_method', 'payment_proof',
+    'attendee_name', 'attendee_email', 'attendee_phone'
+];
+```
+
+**Relationships:**
+```php
+✅ user() → BelongsTo User
+✅ event() → BelongsTo Event
+✅ ticketCategory() → BelongsTo TicketCategory
+```
+
+**Model Methods:**
+```php
+✅ generateOrderCode() - Static method: 'RDJ-XXXXXX-XXX' format
+✅ isPaymentExpired() - Check if payment window expired
+```
+
+**Accessors (Attributes):**
+```php
+✅ status_color - Badge color based on status
+✅ payment_status_color - Badge color for payment status
+✅ payment_status_label - Human-readable payment status
+✅ buyer_name - Falls back to attendee_name or user->name
+✅ buyer_email - Falls back to attendee_email or user->email
+✅ buyer_phone - Falls back to attendee_phone or '-'
+```
+
+**Scopes:**
+```php
+✅ paid() - Where payment_status = 'paid'
+✅ pending() - Where payment_status = 'pending'
+✅ expired() - Where payment_status = 'expired'
+```
+
+**Casts:**
+```php
+✅ total_price → decimal:2
+✅ payment_expired_at → datetime
+✅ paid_at → datetime
+```
+
+**Score Deduction:** -2 points for no order validation logic in model.
+
+---
+
+### ❌ Order Controller (User-Facing) (10/20)
+**CRITICAL: No Quota Management**
+
+**File:** `app/Http/Controllers/OrderController.php`
+
+**Methods (5 total):**
+
+#### 1. **index()** - User order list ✅
+```php
+$orders = Auth::user()->orders()
+    ->with(['event', 'ticketCategory'])
+    ->latest()
+    ->paginate(10);
+```
+- ✅ Shows user's own orders
+- ✅ Pagination
+- ✅ Eager loading
+
+#### 2. **create(Event $event)** - Checkout page ✅
+```php
+$event->load('ticketCategories');
+// Fallback category if event has no ticket categories
+```
+- ✅ Loads ticket categories
+- ✅ Fallback to event price for single-price mode
+- ✅ UI shows remaining quota per category
+
+#### 3. **store(Request $request, Event $event)** - Create order ⚠️
+```php
+$validated = $request->validate([
+    'ticket_category_id' => 'nullable|exists:ticket_categories,id',
+    'quantity' => 'required|integer|min:1',
+    'name' => 'required|string|max:255',
+    'email' => 'required|email|max:255',
+    'phone' => 'required|string|max:20',
+]);
+```
+
+**Validation:** ✅ Good
+- Checks ticket_category existence
+- Validates quantity, name, email, phone
+
+**Quota Check:** ✅ Implemented
+```php
+if ($request->ticket_category_id) {
+    $remainingQuota = $ticketCategory->quota - $ticketCategory->sold;
+    if ($request->quantity > $remainingQuota) {
+        return back()->with('error', 'Kuota kategori tiket tidak mencukupi');
+    }
+} else {
+    if ($request->quantity > $event->remaining_quota) {
+        return back()->with('error', 'Kuota tiket tidak mencukupi');
+    }
+}
+```
+
+**🔴 CRITICAL ISSUE: Quota NOT Decremented**
+```php
+// After order creation - NO CODE TO UPDATE sold_count
+$order = Order::create([...]);
+// ❌ Missing: $ticketCategory->increment('sold', $request->quantity);
+// ❌ Missing: $event->increment('sold_count', $request->quantity);
+```
+
+**Impact:** 
+- Multiple users can book same tickets (race condition)
+- Sold-out events still show as available
+- Data integrity compromised
+
+**Other Issues:**
+- ❌ No database transaction
+- ❌ Status hardcoded to 'pending' (should use constant)
+- ⚠️ No email notification sent
+- ⚠️ No payment expiration set (payment_expired_at always null)
+
+#### 4. **show(Order $order)** - Order detail ✅
+```php
+if ($order->user_id !== Auth::id()) {
+    abort(403);
+}
+```
+- ✅ Authorization check
+- ✅ Eager loads event and ticketCategory
+
+#### 5. **cancel(Order $order)** - Cancel order ⚠️
+```php
+if ($order->status !== 'pending') {
+    return back()->with('error', 'Hanya order dengan status pending yang bisa dibatalkan');
+}
+$order->update(['status' => 'cancelled']);
+```
+- ✅ Authorization check
+- ✅ Status validation
+- ❌ **No quota restoration** (sold count not decremented)
+
+**Score Deduction:** -10 points for missing quota management (CRITICAL).
+
+---
+
+### ✅ Admin Order Controller (16/20)
+**Comprehensive Management**
+
+**File:** `app/Http/Controllers/Admin/OrderController.php`
+
+**Methods (4 total):**
+
+#### 1. **index(Request $request)** - Order list with filters ✅
+```php
+$query = Order::with(['user', 'event', 'ticketCategory']);
+```
+
+**Search:** ✅
+- By order_code
+- By user name/email
+- By attendee_name/email
+
+**Filters:** ✅
+- payment_status (paid, pending, expired)
+- status (confirmed, cancelled)
+- event_id
+- date_from / date_to
+
+**Statistics:** ✅
+```php
+$stats = [
+    'total' => Order::count(),
+    'paid' => Order::where('payment_status', 'paid')->count(),
+    'pending' => Order::where('payment_status', 'pending')->count(),
+    'expired' => Order::where('payment_status', 'expired')->count(),
+    'revenue' => Order::where('payment_status', 'paid')->sum('total_price'),
+];
+```
+
+**Pagination:** ✅ 15 per page
+
+#### 2. **show(Order $order)** - Order detail ✅
+- ✅ Eager loads user, event, ticketCategory
+
+#### 3. **updateStatus(Request $request, Order $order)** - Update payment ✅
+```php
+$request->validate([
+    'payment_status' => 'required|in:paid,pending,expired',
+]);
+
+if ($request->payment_status === 'paid' && $order->payment_status !== 'paid') {
+    $data['paid_at'] = now();
+    $data['status'] = 'confirmed';
+}
+
+if ($request->payment_status === 'expired') {
+    $data['status'] = 'cancelled';
+}
+```
+- ✅ Validation
+- ✅ Auto-sets paid_at when marking as paid
+- ✅ Auto-cancels when marking as expired
+- ⚠️ **No quota update when paid/cancelled**
+
+#### 4. **destroy(Order $order)** - Delete order ✅
+```php
+if ($order->payment_status === 'paid') {
+    return back()->with('error', 'Tidak dapat menghapus order yang sudah dibayar!');
+}
+$order->delete();
+```
+- ✅ Safety check (can't delete paid orders)
+- ❌ **No quota restoration**
+
+**Score Deduction:** -4 points for missing quota management in status updates.
+
+---
+
+### ✅ Views & UI (18/20)
+**Premium Dark Theme Implementation**
+
+#### **User Order List**
+**File:** `resources/views/orders/index.blade.php`
+
+**Features:**
+- ✅ Dark theme (#0B1220 cards, #D4AF37 gold accents)
+- ✅ Order cards with event info, quantity, price
+- ✅ Status badges (colored)
+- ✅ "Lihat Detail" and "Batalkan" buttons
+- ✅ Empty state with CTA to browse events
+- ✅ Pagination
+
+#### **Checkout Page (Order Create)**
+**File:** `resources/views/orders/create.blade.php`
+
+**Layout:** ✅ **2-column responsive**
+- Left: Form (ticket category, quantity, attendee info)
+- Right: Order summary (sticky)
+
+**Ticket Category Selection:** ✅ **EXCELLENT**
+```blade
+@foreach($event->ticketCategories as $category)
+    <input type="radio" data-price="{{ $category->price }}"
+                         data-quota="{{ $category->remaining_quota }}"
+                         {{ $category->is_sold_out ? 'disabled' : '' }}>
+    <div>{{ $category->name }} - Rp {{ number_format($category->price) }}</div>
+    <div>{{ $category->remaining_quota }} tersisa</div>
+    @if($category->is_sold_out)
+        <span>SOLD OUT</span>
+    @endif
+@endforeach
+```
+- ✅ Radio button selection
+- ✅ Shows price per category
+- ✅ Shows remaining quota
+- ✅ Disables sold out categories
+- ✅ Sold out badge
+
+**Quantity Input:** ✅
+```blade
+<input type="number" name="quantity" min="1" max="10">
+<p id="maxInfo">Maksimal 10 tiket per transaksi</p>
+```
+- ✅ Min/max validation
+- ✅ JavaScript updates max based on category quota
+
+**Attendee Info:** ✅
+- Name, Email, Phone (WhatsApp)
+- Pre-filled with auth user data
+
+**Order Summary (Live Update):** ✅ **EXCELLENT**
+```javascript
+const subtotal = selectedPrice * qty;
+const ppn = subtotal * 0.11;  // PPN 11%
+const total = subtotal + ppn;
+```
+- ✅ Real-time calculation
+- ✅ Shows subtotal
+- ✅ **Shows PPN 11%** (tax calculation)
+- ✅ Shows grand total
+- ✅ JavaScript updates on category/quantity change
+
+**⚠️ Issue:** PPN calculation shown in UI but NOT saved to database.
+
+#### **Order Detail (User)**
+**File:** `resources/views/orders/show.blade.php`
+
+**Note:** This view uses `@extends('layouts.admin')` which seems wrong for user-facing order detail. Should use `layouts.app`.
+
+#### **Admin Order Management**
+**File:** `resources/views/admin/orders/index.blade.php`
+
+**Statistics Dashboard:** ✅ **5 cards**
+- Total Orders (blue)
+- Paid (green)
+- Pending (orange)
+- Expired (red)
+- Total Revenue (gold)
+
+**Search & Filter:** ✅ **Comprehensive**
+- Search by order code, customer name, email
+- Filter by payment_status
+- Filter by event_id
+- Date range (from/to)
+- Export Excel button (UI only, not functional)
+
+**Orders Table:** ✅ **Premium Dark Theme**
+- Order code + created date
+- Customer name + email
+- Event title + ticket category
+- Quantity
+- Total price (green)
+- Payment status badge (colored)
+- Actions: View, Update Status, Delete
+
+**Update Status Modal:** ✅ **Alpine.js powered**
+- Radio buttons for paid/pending/expired
+- Update button
+- Clean modal design
+
+**Score Deduction:** -2 points for wrong layout in user order detail + PPN not saved.
+
+---
+
+### ❌ Payment Gateway Integration (0/10)
+**NOT IMPLEMENTED**
+
+**Current State:**
+- ❌ No payment gateway integration (Midtrans, Xendit, etc.)
+- ❌ No payment proof upload functionality
+- ❌ `payment_method` column exists but never populated
+- ❌ `payment_proof` column exists but never used
+- ❌ `payment_expired_at` never set (should be +24h from order creation)
+
+**Impact:**
+- Manual payment verification only
+- No auto-payment confirmation
+- No payment expiration auto-handling
+- Poor user experience
+
+**What's Needed:**
+1. Midtrans/Xendit API integration
+2. Payment callback handler
+3. Payment proof upload form (for manual transfer)
+4. Auto-expiration cron job
+5. Payment notification webhook
+
+**Score:** 0/10 (not implemented)
+
+---
+
+### ❌ Email Notifications (0/10)
+**NOT IMPLEMENTED**
+
+**Current State:**
+- ❌ No email sent on order creation
+- ❌ No email sent on payment confirmation
+- ❌ No email sent on order cancellation
+- ❌ No order confirmation with ticket details
+- ❌ No payment reminder before expiration
+
+**What's Needed:**
+1. OrderCreated mail (with payment instructions)
+2. OrderPaid mail (with e-ticket)
+3. OrderCancelled mail
+4. PaymentReminder mail (24h before expiration)
+5. QR code generation for e-ticket
+
+**Score:** 0/10 (not implemented)
+
+---
+
+### 🔴 Quota Management (0/10)
+**CRITICAL: NOT IMPLEMENTED**
+
+**Current Issues:**
+
+1. **Order Creation** - Quota NOT decremented ❌
+```php
+// ACTUAL CODE:
+$order = Order::create([...]);
+
+// SHOULD BE:
+DB::transaction(function() use ($order, $ticketCategory, $event, $quantity) {
+    $order = Order::create([...]);
+    
+    if ($ticketCategory) {
+        $ticketCategory->increment('sold', $quantity);
+    } else {
+        $event->increment('sold_count', $quantity);
+    }
+});
+```
+
+2. **Order Cancellation** - Quota NOT restored ❌
+```php
+// ACTUAL CODE:
+$order->update(['status' => 'cancelled']);
+
+// SHOULD BE:
+if ($order->ticketCategory) {
+    $order->ticketCategory->decrement('sold', $order->quantity);
+} else {
+    $order->event->decrement('sold_count', $order->quantity);
+}
+$order->update(['status' => 'cancelled']);
+```
+
+3. **Payment Expiration** - Quota NOT restored ❌
+No cron job or scheduled task to:
+- Mark expired orders
+- Restore quota
+
+4. **Race Condition** ❌
+Multiple users can book last ticket simultaneously.
+
+**Solution:** Use database transactions + row locking.
+
+**Score:** 0/10 (CRITICAL bug)
+
+---
+
+### ✅ Ticket Category System (16/20)
+**Well-Implemented Multiple Pricing**
+
+**TicketCategory Model:**
+```php
+✅ Relationships: event()
+✅ Accessors: remaining_quota, is_sold_out
+✅ Casts: price (decimal:2), quota/sold/sort_order (integer)
+```
+
+**Features:**
+- ✅ Multiple ticket categories per event (Early Bird, VIP, Regular)
+- ✅ Individual quota per category
+- ✅ Price per category
+- ✅ Description per category
+- ✅ Sort order for display
+- ✅ Sold counter (but NOT updated in code)
+
+**Event Model Integration:**
+```php
+✅ has_ticket_categories (boolean flag)
+✅ ticketCategories() relationship
+✅ Falls back to event.price if no categories
+```
+
+**Checkout UI:**
+- ✅ Radio selection with price display
+- ✅ Remaining quota shown
+- ✅ Sold out categories disabled
+- ✅ Responsive design
+
+**⚠️ Issues:**
+- Sold counter exists but never incremented (see Quota Management)
+- No validation that total category quota <= event quota
+
+**Score Deduction:** -4 points for sold counter not functional.
+
+---
+
+### 📊 SCORING BREAKDOWN
+
+| Category | Score | Max | Notes |
+|----------|-------|-----|-------|
+| **Database Schema** | 15 | 20 | Missing indexes, non-atomic |
+| **Order Model** | 18 | 20 | Good structure |
+| **User Order Controller** | 10 | 20 | 🔴 No quota management |
+| **Admin Order Controller** | 16 | 20 | Good but quota issue |
+| **Views & UI** | 18 | 20 | Premium design, minor issues |
+| **Payment Gateway** | 0 | 10 | ❌ Not implemented |
+| **Email Notifications** | 0 | 10 | ❌ Not implemented |
+| **Quota Management** | 0 | 10 | 🔴 CRITICAL BUG |
+| **Ticket Categories** | 16 | 20 | Well-designed |
+| **TOTAL** | **70** | **150** | **Adjusted: 70/100** |
+
+---
+
+### 🚨 CRITICAL ISSUES (Must Fix Before Production)
+
+1. **🔴 Quota Management BROKEN** (SHOWSTOPPER)
+   - Orders don't decrement sold count
+   - Cancellations don't restore quota
+   - Race condition allows overbooking
+   - **Action Required:** Implement quota logic with DB transactions
+
+2. **🔴 No Payment Gateway** (BLOCKER for Real Money)
+   - Manual verification only
+   - No auto-confirmation
+   - Poor UX
+   - **Action Required:** Integrate Midtrans or Xendit
+
+3. **🔴 No Email Notifications** (Poor UX)
+   - Users get no confirmation
+   - No e-ticket sent
+   - **Action Required:** Implement Laravel Mail with queues
+
+4. **⚠️ Payment Expiration Not Handled**
+   - `payment_expired_at` never set
+   - No cron job to mark expired orders
+   - **Action Required:** Set expiration +24h, create scheduled command
+
+---
+
+### ⚠️ RECOMMENDATIONS
+
+**HIGH PRIORITY (Before Production):**
+1. 🔴 **Fix quota management** - decrement/increment sold counts
+2. 🔴 **Add database transactions** - prevent race conditions
+3. 🔴 **Integrate payment gateway** (Midtrans recommended)
+4. 🔴 **Implement email notifications** (order confirmation, e-ticket)
+5. ⚠️ **Set payment expiration** - 24h window
+6. ⚠️ **Create scheduled command** - mark expired orders, restore quota
+
+**MEDIUM PRIORITY:**
+7. Add database indexes (order_code, payment_status, event_id)
+8. Save PPN calculation to separate column
+9. Fix user order detail view layout (use layouts.app not admin)
+10. Add order notes/admin comments
+11. Implement payment proof upload for manual transfers
+12. Add refund functionality
+
+**LOW PRIORITY:**
+13. Generate QR code for e-tickets
+14. Export orders to Excel (button exists but not functional)
+15. Add order analytics dashboard
+16. SMS notifications via Twilio
+17. WhatsApp notifications via Fonnte
+
+---
+
+### ✅ WHAT WORKS WELL
+
+✅ Premium dark theme UI consistent with design system  
+✅ Multiple ticket categories with individual pricing  
+✅ User-friendly checkout flow with live summary calculation  
+✅ Admin order management with comprehensive filters  
+✅ Order search by multiple criteria  
+✅ Statistics dashboard (total, paid, pending, expired, revenue)  
+✅ Payment status update modal (Alpine.js)  
+✅ Sold-out badge and disabled categories in UI  
+✅ Order cancellation with authorization check  
+✅ Safety check (can't delete paid orders)  
+
+---
+
+### 🔧 FILES EXAMINED
+
+**Models:**
+- ✅ `app/Models/Order.php`
+- ✅ `app/Models/TicketCategory.php`
+
+**Controllers:**
+- ✅ `app/Http/Controllers/OrderController.php` (user-facing, 5 methods)
+- ✅ `app/Http/Controllers/Admin/OrderController.php` (admin, 4 methods)
+
+**Views:**
+- ✅ `resources/views/orders/index.blade.php` (user order list)
+- ✅ `resources/views/orders/create.blade.php` (checkout page)
+- ✅ `resources/views/orders/show.blade.php` (order detail)
+- ✅ `resources/views/admin/orders/index.blade.php` (admin order list)
+- ✅ `resources/views/admin/orders/show.blade.php` (admin order detail)
+
+**Migrations:**
+- ✅ `database/migrations/2026_06_19_171603_create_orders_table.php`
+- ✅ `database/migrations/2026_06_22_072652_add_payment_status_to_orders_table.php`
+- ✅ `database/migrations/2026_06_21_154205_create_ticket_categories_table.php`
+
+**Routes:**
+- ✅ `routes/web.php` (lines 46-50: user order routes, line 127-128: admin order routes)
+
+---
+
+### 📝 NEXT STEPS
+
+**Before Production:**
+1. 🔴 Fix quota management (CRITICAL)
+2. 🔴 Integrate payment gateway
+3. 🔴 Implement email notifications
+4. ⚠️ Add payment expiration handling
+5. ⚠️ Create order expiration cron job
+
+**Ready to Continue:**
+✅ Proceed to **Audit #6: Database Schema Complete Review**
 
 ---
 
