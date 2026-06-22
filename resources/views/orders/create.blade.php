@@ -46,7 +46,8 @@
                                            data-quota="{{ $category->remaining_quota }}"
                                            class="peer sr-only ticket-radio"
                                            required
-                                           {{ $category->is_sold_out ? 'disabled' : '' }}>
+                                           {{ $category->is_sold_out ? 'disabled' : '' }}
+                                           {{ old('ticket_category_id') == $category->id ? 'checked' : '' }}>
                                     
                                     <div class="p-4 rounded-lg border-2 cursor-pointer transition-all
                                                 {{ $category->is_sold_out ? 'bg-white/5 border-white/10 cursor-not-allowed opacity-50' : 'border-white/10 hover:border-[#D4AF37]/50 peer-checked:border-[#D4AF37] peer-checked:bg-[#D4AF37]/10' }}">
@@ -79,6 +80,9 @@
                                 </label>
                             @endforeach
                         </div>
+                        @error('ticket_category_id')
+                            <p class="text-red-400 text-xs mt-2">{{ $message }}</p>
+                        @enderror
                     @endif
                 </div>
 
@@ -88,12 +92,16 @@
                     <input type="number" 
                            name="quantity" 
                            id="quantity"
-                           value="1" 
+                           value="{{ old('quantity', 1) }}" 
                            min="1"
                            max="10"
                            required
-                           class="w-full px-4 py-3 rounded-lg bg-black border border-white/10 text-white focus:border-[#D4AF37] focus:outline-none">
-                    <p class="text-xs text-gray-500 mt-2" id="maxInfo">Maksimal 10 tiket per transaksi</p>
+                           class="w-full px-4 py-3 rounded-lg bg-black border text-white focus:outline-none @error('quantity') border-red-500 focus:border-red-500 @else border-white/10 focus:border-[#D4AF37] @enderror">
+                    @error('quantity')
+                        <p class="text-red-400 text-xs mt-2">{{ $message }}</p>
+                    @else
+                        <p class="text-xs text-gray-500 mt-2" id="maxInfo">Maksimal 10 tiket per transaksi</p>
+                    @enderror
                 </div>
 
                 {{-- Informasi Pemesan --}}
@@ -104,29 +112,38 @@
                         <div>
                             <label class="block text-xs text-gray-400 mb-2">Nama Lengkap *</label>
                             <input type="text" 
-                                   name="attendee_name" 
-                                   value="{{ old('attendee_name', auth()->user()->name ?? '') }}"
+                                   name="name" 
+                                   value="{{ old('name', auth()->user()->name ?? '') }}"
                                    required
-                                   class="w-full px-4 py-2.5 rounded-lg bg-black border border-white/10 text-white text-sm focus:border-[#D4AF37] focus:outline-none">
+                                   class="w-full px-4 py-2.5 rounded-lg bg-black border text-white text-sm focus:outline-none @error('name') border-red-500 focus:border-red-500 @else border-white/10 focus:border-[#D4AF37] @enderror">
+                            @error('name')
+                                <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs text-gray-400 mb-2">Email *</label>
                             <input type="email" 
-                                   name="attendee_email" 
-                                   value="{{ old('attendee_email', auth()->user()->email ?? '') }}"
+                                   name="email" 
+                                   value="{{ old('email', auth()->user()->email ?? '') }}"
                                    required
-                                   class="w-full px-4 py-2.5 rounded-lg bg-black border border-white/10 text-white text-sm focus:border-[#D4AF37] focus:outline-none">
+                                   class="w-full px-4 py-2.5 rounded-lg bg-black border text-white text-sm focus:outline-none @error('email') border-red-500 focus:border-red-500 @else border-white/10 focus:border-[#D4AF37] @enderror">
+                            @error('email')
+                                <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
                             <label class="block text-xs text-gray-400 mb-2">No. WhatsApp *</label>
                             <input type="text" 
-                                   name="attendee_phone" 
-                                   value="{{ old('attendee_phone') }}"
+                                   name="phone" 
+                                   value="{{ old('phone') }}"
                                    placeholder="08xxxxxxxxxx"
                                    required
-                                   class="w-full px-4 py-2.5 rounded-lg bg-black border border-white/10 text-white text-sm focus:border-[#D4AF37] focus:outline-none">
+                                   class="w-full px-4 py-2.5 rounded-lg bg-black border text-white text-sm focus:outline-none @error('phone') border-red-500 focus:border-red-500 @else border-white/10 focus:border-[#D4AF37] @enderror">
+                            @error('phone')
+                                <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -180,10 +197,18 @@
                     </div>
 
                     <button type="submit"
+                            id="submitBtn"
                             class="w-full py-3 rounded-xl text-center text-sm font-bold tracking-wider
-                                   transition-opacity hover:opacity-90"
+                                   transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                             style="background: linear-gradient(135deg, #D4AF37, #F4C542); color: #000;">
-                        LANJUTKAN PEMBAYARAN
+                        <span id="btnText">LANJUTKAN PEMBAYARAN</span>
+                        <span id="btnLoading" class="hidden">
+                            <svg class="animate-spin inline-block w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Memproses...
+                        </span>
                     </button>
 
                     @guest
@@ -210,6 +235,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const ppnEl = document.getElementById('ppn');
     const totalPriceEl = document.getElementById('totalPrice');
     const maxInfoEl = document.getElementById('maxInfo');
+    const form = document.getElementById('orderForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnLoading = document.getElementById('btnLoading');
 
     let selectedPrice = 0;
     let selectedCategoryName = '';
@@ -246,7 +275,9 @@ document.addEventListener('DOMContentLoaded', function() {
             maxQuota = parseInt(this.dataset.quota);
 
             quantityInput.max = Math.min(maxQuota, 10);
-            maxInfoEl.textContent = `Maksimal ${quantityInput.max} tiket`;
+            if (maxInfoEl) {
+                maxInfoEl.textContent = `Maksimal ${quantityInput.max} tiket`;
+            }
 
             if (parseInt(quantityInput.value) > quantityInput.max) {
                 quantityInput.value = quantityInput.max;
@@ -257,6 +288,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     quantityInput.addEventListener('input', updateSummary);
+
+    // Form submit loading state
+    form.addEventListener('submit', function(e) {
+        submitBtn.disabled = true;
+        btnText.classList.add('hidden');
+        btnLoading.classList.remove('hidden');
+    });
+
+    // Initialize summary if category is pre-selected (from validation error)
+    const checkedRadio = document.querySelector('.ticket-radio:checked');
+    if (checkedRadio) {
+        checkedRadio.dispatchEvent(new Event('change'));
+    }
 });
 </script>
 

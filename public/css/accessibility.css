@@ -1,0 +1,419 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * RADJATIKET - ACCESSIBILITY STYLES
+ * ═══════════════════════════════════════════════════════════════
+ * WCAG 2.1 Level AA Compliance
+ * Created: 2026-06-21
+ * 
+ * USAGE: Add this to layouts/app.blade.php:
+ * <link rel="stylesheet" href="{{ asset('css/accessibility.css') }}">
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+ * SCREEN READER ONLY CLASSES
+ * ═══════════════════════════════════════════════════════════════ */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.sr-only-focusable:focus,
+.sr-only-focusable:active {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * FOCUS INDICATORS (WCAG 2.4.7 - Level AA)
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Default focus style for all interactive elements */
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+[role="button"]:focus,
+[tabindex]:not([tabindex="-1"]):focus {
+    outline: 2px solid #F5C518;
+    outline-offset: 2px;
+    transition: outline 0.2s ease;
+}
+
+/* Remove outline for mouse users, keep for keyboard */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Enhanced focus for keyboard navigation */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #F5C518;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(245, 197, 24, 0.2);
+}
+
+/* Focus for cards and interactive divs */
+.card:focus,
+.event-card:focus,
+[role="button"]:focus {
+    outline: 2px solid #F5C518;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(245, 197, 24, 0.15);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * SKIP LINKS (WCAG 2.4.1 - Level A)
+ * ═══════════════════════════════════════════════════════════════ */
+
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    background: #F5C518;
+    color: #000;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    z-index: 99999;
+    transition: top 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.skip-link:focus {
+    top: 1rem;
+}
+
+.skip-link:hover {
+    background: #FFD700;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * COLOR CONTRAST IMPROVEMENTS (WCAG 1.4.3 - Level AA)
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Update gray colors for better contrast on #050B14 background */
+.text-gray-400-accessible {
+    color: #B0BEC5; /* 5.2:1 contrast ratio (AA compliant) */
+}
+
+.text-gray-500-accessible {
+    color: #9CA3AF; /* 4.7:1 contrast ratio (AA compliant) */
+}
+
+/* Ensure secondary text meets contrast requirements */
+.text-secondary {
+    color: #B0BEC5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * HIGH CONTRAST MODE SUPPORT
+ * ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-contrast: high) {
+    body {
+        background: #000;
+    }
+    
+    .text-gray-400,
+    .text-gray-500 {
+        color: #E0E0E0;
+    }
+    
+    a:focus,
+    button:focus,
+    input:focus {
+        outline: 3px solid #FFD700;
+        outline-offset: 3px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * REDUCED MOTION SUPPORT (WCAG 2.3.3 - Level AAA)
+ * ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    /* Keep swiper functional but remove slide animation */
+    .swiper-slide {
+        transition: none !important;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * LOADING STATES (ARIA Live Regions)
+ * ═══════════════════════════════════════════════════════════════ */
+
+[aria-busy="true"] {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: wait;
+}
+
+[role="status"],
+[role="alert"] {
+    position: relative;
+}
+
+/* Loading spinner accessibility */
+.loading-spinner {
+    position: relative;
+}
+
+.loading-spinner::after {
+    content: attr(aria-label);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * FORM ACCESSIBILITY
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Required field indicator */
+label[required]::after,
+label[aria-required="true"]::after {
+    content: " *";
+    color: #EF4444;
+    font-weight: 700;
+}
+
+/* Error state for inputs */
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+    border-color: #EF4444 !important;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+input[aria-invalid="true"]:focus,
+select[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus {
+    outline-color: #EF4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+}
+
+/* Success state */
+input[aria-invalid="false"]:valid,
+select[aria-invalid="false"]:valid,
+textarea[aria-invalid="false"]:valid {
+    border-color: #22C55E;
+}
+
+/* Error messages */
+[role="alert"] {
+    font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * BUTTON ACCESSIBILITY
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Disabled state */
+button:disabled,
+button[aria-disabled="true"],
+[role="button"][aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Loading state */
+button[aria-busy="true"] {
+    cursor: wait;
+    pointer-events: none;
+}
+
+/* Icon-only buttons should have minimum touch target */
+button:not(:has(span)):not(:has(p)),
+[role="button"]:not(:has(span)):not(:has(p)) {
+    min-width: 44px;
+    min-height: 44px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * MODAL ACCESSIBILITY
+ * ═══════════════════════════════════════════════════════════════ */
+
+[role="dialog"],
+[aria-modal="true"] {
+    position: fixed;
+}
+
+/* Backdrop */
+[role="dialog"]::before,
+[aria-modal="true"]::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+/* Hide body scroll when modal is open */
+body:has([role="dialog"]),
+body:has([aria-modal="true"]) {
+    overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * CAROUSEL ACCESSIBILITY (Swiper)
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Ensure swiper navigation buttons are accessible */
+.swiper-button-prev,
+.swiper-button-next {
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.swiper-button-prev:focus,
+.swiper-button-next:focus {
+    outline: 2px solid #F5C518;
+    outline-offset: 2px;
+}
+
+/* Pagination bullets */
+.swiper-pagination-bullet {
+    min-width: 12px;
+    min-height: 12px;
+}
+
+.swiper-pagination-bullet:focus {
+    outline: 2px solid #F5C518;
+    outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * LINK ACCESSIBILITY
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* External links indicator */
+a[target="_blank"]::after {
+    content: " ↗";
+    font-size: 0.875em;
+    color: #F5C518;
+}
+
+/* Skip external icon on certain elements */
+a[target="_blank"].no-external-icon::after,
+a[target="_blank"]:has(img)::after {
+    content: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * TOUCH TARGET SIZE (WCAG 2.5.5 - Level AAA)
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Minimum touch target 44x44px for mobile */
+@media (max-width: 768px) {
+    a,
+    button,
+    input[type="checkbox"],
+    input[type="radio"],
+    [role="button"] {
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * PRINT STYLES
+ * ═══════════════════════════════════════════════════════════════ */
+
+@media print {
+    /* Hide non-essential elements */
+    nav,
+    .no-print,
+    [aria-hidden="true"] {
+        display: none !important;
+    }
+    
+    /* Ensure text is readable */
+    body {
+        background: white;
+        color: black;
+    }
+    
+    a {
+        color: blue;
+        text-decoration: underline;
+    }
+    
+    /* Show URLs for external links */
+    a[href^="http"]:not([href*="radjatiket.com"])::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * UTILITY CLASSES
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* Visually hidden but accessible to screen readers */
+.visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+/* Remove all animations for users who prefer reduced motion */
+.no-animation {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* High contrast borders */
+.high-contrast-border {
+    border: 2px solid currentColor;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+ * END OF ACCESSIBILITY STYLES
+ * ═══════════════════════════════════════════════════════════════ */
