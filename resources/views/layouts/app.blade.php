@@ -31,7 +31,7 @@
             <div class="flex justify-between items-center h-[72px]">
                 
                 {{-- Logo --}}
-                <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 group relative z-10">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/>
@@ -43,18 +43,18 @@
                 </a>
 
                 {{-- Menu Navigation --}}
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('home') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors {{ request()->routeIs('home') ? 'text-[#F5C518]' : '' }}">
+                <div class="hidden md:flex items-center gap-8 relative z-10">
+                    <a href="{{ route('home') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('home') ? 'text-[#F5C518]' : '' }}">
                         Beranda
                     </a>
-                    <a href="{{ route('events.index') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors {{ request()->routeIs('events.*') ? 'text-[#F5C518]' : '' }}">
+                    <a href="{{ route('events.index') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('events.*') ? 'text-[#F5C518]' : '' }}">
                         Event
                     </a>
                     
                     {{-- Menu Admin (hanya tampil jika user adalah admin) --}}
                     @auth
                         @if(auth()->user()->role === 'admin')
-                            <a href="{{ route('admin.index') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors {{ request()->routeIs('admin.*') ? 'text-[#F5C518]' : '' }}">
+                            <a href="{{ route('admin.index') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('admin.*') ? 'text-[#F5C518]' : '' }}">
                                 Admin Dashboard
                             </a>
                         @endif
@@ -62,7 +62,7 @@
                 </div>
 
                 {{-- Right Actions --}}
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4 relative z-10">
                     
                     {{-- Search Icon --}}
                     <button type="button" 
