@@ -81,6 +81,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('banners', HomeBannerController::class);
     Route::post('banners/{banner}/toggle-status', [HomeBannerController::class, 'toggleStatus'])->name('banners.toggle-status');
     
+    // Homepage Settings
+    Route::get('homepage-settings', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'index'])->name('homepage-settings.index');
+    Route::put('homepage-settings', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'update'])->name('homepage-settings.update');
+    
     // ═══════════════════════════════════════════════════════════════
     // EVENT MANAGEMENT
     // ═══════════════════════════════════════════════════════════════

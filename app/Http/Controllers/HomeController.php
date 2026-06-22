@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\HomeBanner;
+use App\Models\HomepageSetting;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        // LOAD HOMEPAGE SETTINGS
+        $settings = HomepageSetting::getSettings();
+
         // LOAD BANNERS FROM DATABASE (from home_banners table)
         try {
             $banners = HomeBanner::where('status', 'active')
@@ -52,6 +56,7 @@ class HomeController extends Controller
             ->get();
 
         return view('welcome', compact(
+            'settings',
             'banners',
             'events',
             'recommendedEvents',
