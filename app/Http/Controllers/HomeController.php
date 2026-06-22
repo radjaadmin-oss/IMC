@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Models\Banner;
+use App\Models\HomeBanner;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // LOAD BANNERS FROM DATABASE (with error handling)
+        // LOAD BANNERS FROM DATABASE (from home_banners table)
         try {
-            $banners = Banner::where('is_active', true)
-                ->orderBy('order')
+            $banners = HomeBanner::where('status', 'active')
+                ->orderBy('sort_order')
                 ->get();
         } catch (\Exception $e) {
-            // If banners table doesn't exist, use empty collection
+            // If home_banners table doesn't exist, use empty collection
             $banners = collect([]);
         }
 
