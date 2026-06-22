@@ -111,12 +111,13 @@
                         Kategori Event <span class="text-red-400">*</span>
                     </label>
                     <select name="category_id" 
-                            class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('category_id') border-red-500 @else border-white/10 @enderror 
-                                   text-white focus:outline-none focus:border-[#D4AF37] transition-colors category-select"
+                            style="background-color: #1a2332 !important; color: #ffffff !important;"
+                            class="w-full px-4 py-3 rounded-xl border @error('category_id') border-red-500 @else border-white/10 @enderror 
+                                   focus:outline-none focus:border-[#D4AF37] transition-colors category-select"
                             required>
-                        <option value="" class="bg-[#0B1220] text-gray-400">-- Pilih Kategori --</option>
+                        <option value="" style="background-color: #1a2332; color: #9CA3AF;">-- Pilih Kategori --</option>
                         @foreach(\App\Models\EventCategory::where('is_active', true)->orderBy('name')->get() as $cat)
-                            <option value="{{ $cat->id }}" class="bg-[#0B1220] text-white" {{ old('category_id', $event->category_id) == $cat->id ? 'selected' : '' }}>
+                            <option value="{{ $cat->id }}" style="background-color: #1a2332; color: #ffffff;" {{ old('category_id', $event->category_id) == $cat->id ? 'selected' : '' }}>
                                 {{ $cat->name }}
                             </option>
                         @endforeach
@@ -439,24 +440,27 @@
 @push('styles')
 <style>
 /* Custom styling for category select dropdown */
-.category-select option {
-    background-color: #0B1220 !important;
-    color: #ffffff !important;
-    padding: 10px !important;
-}
-
-.category-select option:hover {
-    background-color: #1a2332 !important;
-    color: #D4AF37 !important;
-}
-
-.category-select option[value=""] {
-    color: #9CA3AF !important;
-}
-
-/* Fix untuk browser yang tidak support option styling */
 .category-select {
     color-scheme: dark;
+    background-color: #1a2332 !important;
+    color: #ffffff !important;
+}
+
+/* Styling untuk Firefox */
+.category-select option {
+    background-color: #1a2332;
+    color: #ffffff;
+    padding: 8px;
+}
+
+.category-select option:checked {
+    background-color: #D4AF37;
+    color: #000000;
+}
+
+/* Styling placeholder */
+.category-select option[value=""] {
+    color: #9CA3AF;
 }
 </style>
 @endpush
@@ -464,6 +468,25 @@
 @push('scripts')
 <script>
 let categoryIndex = {{ $event->ticketCategories->count() }};
+
+// Fix dropdown styling on click (for browsers that don't support option CSS)
+document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.querySelector('.category-select');
+    
+    if (categorySelect) {
+        // Set dark background when dropdown opens
+        categorySelect.addEventListener('focus', function() {
+            this.style.backgroundColor = '#1a2332';
+            this.style.color = '#ffffff';
+        });
+        
+        // Keep styling on change
+        categorySelect.addEventListener('change', function() {
+            this.style.backgroundColor = '#0B1220';
+            this.style.color = '#ffffff';
+        });
+    }
+});
 
 // Toggle Categories Section
 document.getElementById('toggleCategories').addEventListener('change', function() {
