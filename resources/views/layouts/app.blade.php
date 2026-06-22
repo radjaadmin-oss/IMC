@@ -23,14 +23,14 @@
         }
         
         /* ═══════════════════════════════════════════════════════ */
-        /* NAVBAR CLICKABILITY FIX */
+        /* NAVBAR CLICKABILITY FIX - AGGRESSIVE MODE */
         /* ═══════════════════════════════════════════════════════ */
         
         /* Create new stacking context for navbar */
         nav {
             position: sticky !important;
             top: 0 !important;
-            z-index: 9999 !important;
+            z-index: 999999 !important;
             pointer-events: auto !important;
             isolation: isolate;
         }
@@ -44,27 +44,34 @@
             pointer-events: auto !important;
             cursor: pointer !important;
             position: relative !important;
-            z-index: 1 !important;
+            z-index: 999999 !important;
         }
         
         /* Ensure navbar content doesn't get overlapped */
         nav > div {
             position: relative;
-            z-index: 1;
+            z-index: 999999;
         }
         
         /* Force main content to be below navbar */
         main,
-        section {
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Prevent swiper from creating stacking context above navbar */
+        section,
         .swiper,
-        .swiper-container {
+        .swiper-container,
+        .swiper-wrapper,
+        .swiper-slide {
             position: relative;
             z-index: 1 !important;
+        }
+        
+        /* Prevent ANY element from going above navbar */
+        body > *:not(nav) {
+            z-index: 1 !important;
+        }
+        
+        /* Extra aggressive for navbar links */
+        nav a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -89,17 +96,26 @@
 
                 {{-- Menu Navigation --}}
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('home') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('home') ? 'text-[#F5C518]' : '' }}">
+                    <a href="{{ route('home') }}" 
+                       onclick="window.location.href='{{ route('home') }}'; return false;"
+                       class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('home') ? 'text-[#F5C518]' : '' }}"
+                       style="pointer-events: auto !important; z-index: 99999 !important; position: relative !important;">
                         Beranda
                     </a>
-                    <a href="{{ route('events.index') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('events.*') ? 'text-[#F5C518]' : '' }}">
+                    <a href="{{ route('events.index') }}" 
+                       onclick="window.location.href='{{ route('events.index') }}'; return false;"
+                       class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('events.*') ? 'text-[#F5C518]' : '' }}"
+                       style="pointer-events: auto !important; z-index: 99999 !important; position: relative !important;">
                         Event
                     </a>
                     
                     {{-- Menu Admin (hanya tampil jika user adalah admin) --}}
                     @auth
                         @if(auth()->user()->role === 'admin')
-                            <a href="{{ route('admin.index') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('admin.*') ? 'text-[#F5C518]' : '' }}">
+                            <a href="{{ route('admin.index') }}" 
+                               onclick="window.location.href='{{ route('admin.index') }}'; return false;"
+                               class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('admin.*') ? 'text-[#F5C518]' : '' }}"
+                               style="pointer-events: auto !important; z-index: 99999 !important; position: relative !important;">
                                 Admin Dashboard
                             </a>
                         @endif
@@ -276,32 +292,72 @@
     {{-- SCRIPTS --}}
     @stack('scripts')
 
-    {{-- NAVBAR CLICK DEBUG SCRIPT --}}
+    {{-- NAVBAR CLICK DEBUG SCRIPT - ENHANCED --}}
     <script>
     // Debug: Log all navbar links and their clickability
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('%c═══════════════════════════════════════', 'color: #F5C518; font-weight: bold');
+        console.log('%c NAVBAR LINKS DEBUG - ENHANCED VERSION', 'color: #F5C518; font-weight: bold');
+        console.log('%c═══════════════════════════════════════', 'color: #F5C518; font-weight: bold');
+        
         const navLinks = document.querySelectorAll('nav a');
-        console.log('═══ NAVBAR LINKS DEBUG ═══');
         console.log('Total navbar links found:', navLinks.length);
+        
+        if (navLinks.length === 0) {
+            console.error('⚠️ NO NAVBAR LINKS FOUND! Check if nav element exists.');
+        }
         
         navLinks.forEach((link, index) => {
             const computedStyle = window.getComputedStyle(link);
+            const rect = link.getBoundingClientRect();
+            
             console.log(`Link ${index + 1}:`, {
                 text: link.textContent.trim(),
                 href: link.href,
                 pointerEvents: computedStyle.pointerEvents,
                 zIndex: computedStyle.zIndex,
                 position: computedStyle.position,
-                cursor: computedStyle.cursor
+                cursor: computedStyle.cursor,
+                display: computedStyle.display,
+                visibility: computedStyle.visibility,
+                dimensions: `${Math.round(rect.width)}x${Math.round(rect.height)}px`,
+                top: Math.round(rect.top) + 'px'
             });
             
             // Add click listener to verify clicks are registering
             link.addEventListener('click', function(e) {
-                console.log('✓ Link clicked:', link.textContent.trim(), '→', link.href);
+                console.log('%c✓ LINK CLICKED!', 'color: #00ff00; font-weight: bold', {
+                    text: link.textContent.trim(),
+                    href: link.href,
+                    defaultPrevented: e.defaultPrevented
+                });
+            });
+            
+            // Add mouseover to detect hover
+            link.addEventListener('mouseenter', function() {
+                console.log('👆 Mouse over:', link.textContent.trim());
             });
         });
         
-        console.log('═══════════════════════════');
+        // Check for overlapping elements
+        const nav = document.querySelector('nav');
+        if (nav) {
+            const navRect = nav.getBoundingClientRect();
+            console.log('Navbar dimensions:', {
+                width: Math.round(navRect.width),
+                height: Math.round(navRect.height),
+                top: Math.round(navRect.top),
+                zIndex: window.getComputedStyle(nav).zIndex
+            });
+            
+            // Check what's at navbar position
+            const elementAtNav = document.elementFromPoint(navRect.left + 100, navRect.top + 36);
+            console.log('Element at navbar center:', elementAtNav?.tagName, elementAtNav?.className);
+        }
+        
+        console.log('%c═══════════════════════════════════════', 'color: #F5C518; font-weight: bold');
+        console.log('%cTest: Klik menu navbar dan lihat console log', 'color: #00ff00');
+        console.log('%c═══════════════════════════════════════', 'color: #F5C518; font-weight: bold');
     });
     </script>
 
