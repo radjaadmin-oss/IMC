@@ -12,7 +12,7 @@
 <section class="mt-4 mb-6">
     <div class="max-w-[1280px] mx-auto px-6">
         
-        <div class="swiper hero-swiper rounded-[28px] overflow-hidden shadow-2xl">
+        <div class="swiper hero-swiper rounded-[28px] overflow-hidden shadow-2xl relative">
             <div class="swiper-wrapper">
                 
                 @if(isset($banners) && $banners->isNotEmpty())
@@ -65,6 +65,10 @@
                 @endif
                 
             </div>
+            
+            {{-- Navigation Arrows --}}
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
             
             {{-- Pagination Dots --}}
             <div class="swiper-pagination"></div>
@@ -455,6 +459,12 @@ document.addEventListener('DOMContentLoaded', function() {
         slidesPerView: 1,
         spaceBetween: 0,
         
+        // Navigation Arrows
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        
         // Pagination
         pagination: {
             el: '.swiper-pagination',
@@ -522,10 +532,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* No navigation arrows - clean minimal design */
 
+/* Navigation Arrows - Gold Theme */
+.hero-swiper .swiper-button-prev,
+.hero-swiper .swiper-button-next {
+    width: 48px;
+    height: 48px;
+    background: rgba(245, 197, 24, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    border: 1px solid rgba(245, 197, 24, 0.2);
+    color: #F5C518;
+    transition: all 0.3s ease;
+}
+
 .hero-swiper .swiper-button-prev:hover,
 .hero-swiper .swiper-button-next:hover {
-    background: rgba(245, 197, 24, 0.2);
+    background: rgba(245, 197, 24, 0.3);
+    border-color: rgba(245, 197, 24, 0.5);
     transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(245, 197, 24, 0.3);
 }
 
 .hero-swiper .swiper-button-prev::after,
