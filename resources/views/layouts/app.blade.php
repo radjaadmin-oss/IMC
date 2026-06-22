@@ -22,29 +22,61 @@
             font-family: 'Inter', sans-serif;
         }
         
-        /* Force navbar links to be clickable */
-        nav a {
+        /* ═══════════════════════════════════════════════════════ */
+        /* NAVBAR CLICKABILITY FIX */
+        /* ═══════════════════════════════════════════════════════ */
+        
+        /* Create new stacking context for navbar */
+        nav {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 9999 !important;
+            pointer-events: auto !important;
+            isolation: isolate;
+        }
+        
+        /* Force all navbar links and buttons to be clickable */
+        nav *,
+        nav a,
+        nav button,
+        nav form,
+        nav input {
             pointer-events: auto !important;
             cursor: pointer !important;
             position: relative !important;
-            z-index: 999 !important;
+            z-index: 1 !important;
         }
         
-        /* Ensure navbar is on top */
-        nav {
-            pointer-events: auto !important;
+        /* Ensure navbar content doesn't get overlapped */
+        nav > div {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Force main content to be below navbar */
+        main,
+        section {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Prevent swiper from creating stacking context above navbar */
+        .swiper,
+        .swiper-container {
+            position: relative;
+            z-index: 1 !important;
         }
     </style>
 </head>
 <body class="antialiased bg-[#050B14] text-white">
 
     {{-- NAVBAR --}}
-    <nav class="sticky top-0 z-50 bg-[rgba(5,11,20,0.85)] backdrop-blur-xl border-b border-white/5">
-        <div class="max-w-[1280px] mx-auto px-6">
-            <div class="flex justify-between items-center h-[72px]">
+    <nav class="sticky top-0 z-[9999] bg-[rgba(5,11,20,0.85)] backdrop-blur-xl border-b border-white/5" style="position: sticky !important; top: 0 !important; z-index: 9999 !important;">
+        <div class="max-w-[1280px] mx-auto px-6 relative z-10">
+            <div class="flex justify-between items-center h-[72px] relative z-10">
                 
                 {{-- Logo --}}
-                <a href="{{ route('home') }}" class="flex items-center gap-2 group relative z-10">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/>
@@ -56,7 +88,7 @@
                 </a>
 
                 {{-- Menu Navigation --}}
-                <div class="hidden md:flex items-center gap-8 relative z-10">
+                <div class="hidden md:flex items-center gap-8">
                     <a href="{{ route('home') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('home') ? 'text-[#F5C518]' : '' }}">
                         Beranda
                     </a>
@@ -75,7 +107,7 @@
                 </div>
 
                 {{-- Right Actions --}}
-                <div class="flex items-center gap-4 relative z-10">
+                <div class="flex items-center gap-4">
                     
                     {{-- Search Icon --}}
                     <button type="button" 
@@ -243,6 +275,35 @@
 
     {{-- SCRIPTS --}}
     @stack('scripts')
+
+    {{-- NAVBAR CLICK DEBUG SCRIPT --}}
+    <script>
+    // Debug: Log all navbar links and their clickability
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('nav a');
+        console.log('═══ NAVBAR LINKS DEBUG ═══');
+        console.log('Total navbar links found:', navLinks.length);
+        
+        navLinks.forEach((link, index) => {
+            const computedStyle = window.getComputedStyle(link);
+            console.log(`Link ${index + 1}:`, {
+                text: link.textContent.trim(),
+                href: link.href,
+                pointerEvents: computedStyle.pointerEvents,
+                zIndex: computedStyle.zIndex,
+                position: computedStyle.position,
+                cursor: computedStyle.cursor
+            });
+            
+            // Add click listener to verify clicks are registering
+            link.addEventListener('click', function(e) {
+                console.log('✓ Link clicked:', link.textContent.trim(), '→', link.href);
+            });
+        });
+        
+        console.log('═══════════════════════════');
+    });
+    </script>
 
 </body>
 </html>
