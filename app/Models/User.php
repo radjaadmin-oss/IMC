@@ -21,6 +21,12 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'status',
+        'phone',
+        'company_name',
+        'bank_name',
+        'bank_account',
+        'bank_holder_name',
     ];
 
     /**
@@ -68,5 +74,13 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get events created by this user (for event organizers)
+     */
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'organizer_id');
     }
 }

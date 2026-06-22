@@ -7,6 +7,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\HomeBannerController;
+use App\Http\Controllers\Admin\UserController;
 
 Route::get('/dashboard', function () {
     // Redirect admin ke admin.index, user biasa ke home
@@ -50,11 +51,45 @@ Route::middleware('auth')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
     
+    // ═══════════════════════════════════════════════════════════════
+    // USER MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════
+    
+    // Admin Users
+    Route::get('users/admins', [UserController::class, 'admins'])->name('users.admins');
+    Route::post('users/admins', [UserController::class, 'storeAdmin'])->name('users.admins.store');
+    Route::put('users/admins/{user}', [UserController::class, 'updateAdmin'])->name('users.admins.update');
+    Route::delete('users/admins/{user}', [UserController::class, 'destroyAdmin'])->name('users.admins.destroy');
+    
+    // Event Organizers
+    Route::get('users/event-organizers', [UserController::class, 'eventOrganizers'])->name('users.event-organizers');
+    Route::post('users/event-organizers/{user}/approve', [UserController::class, 'approveEO'])->name('users.event-organizers.approve');
+    Route::post('users/event-organizers/{user}/suspend', [UserController::class, 'suspendEO'])->name('users.event-organizers.suspend');
+    Route::post('users/event-organizers/{user}/reject', [UserController::class, 'rejectEO'])->name('users.event-organizers.reject');
+    
+    // Customers
+    Route::get('users/customers', [UserController::class, 'customers'])->name('users.customers');
+    Route::get('users/customers/{user}', [UserController::class, 'showCustomer'])->name('users.customers.show');
+    Route::post('users/customers/{user}/suspend', [UserController::class, 'suspendCustomer'])->name('users.customers.suspend');
+    Route::post('users/customers/{user}/activate', [UserController::class, 'activateCustomer'])->name('users.customers.activate');
+    
+    // ═══════════════════════════════════════════════════════════════
+    // CMS & CONTENT MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════
+    
     // Home Banners
     Route::resource('banners', HomeBannerController::class);
     
+    // ═══════════════════════════════════════════════════════════════
+    // EVENT MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════
+    
     // Events Management
     Route::resource('events', \App\Http\Controllers\Admin\EventController::class);
+    
+    // ═══════════════════════════════════════════════════════════════
+    // TRANSACTION MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════
     
     // Orders Management
     Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'destroy']);
