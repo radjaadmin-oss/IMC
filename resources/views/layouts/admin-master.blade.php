@@ -74,28 +74,28 @@
             </div>
 
             {{-- Navigation Menu --}}
-            <nav class="flex-1 overflow-y-auto py-4 px-3">
-                <div class="space-y-1">
+            <nav class="flex-1 overflow-y-auto py-2 px-2">
+                <div class="space-y-0.5">
 
                     {{-- Dashboard --}}
                     <a href="{{ route('admin.index') }}" 
-                       class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all group
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all group
                               {{ request()->routeIs('admin.index') ? 'bg-[#B22222] text-white shadow-lg shadow-[#B22222]/20' : 'text-[#A1A1AA] hover:bg-[#111111] hover:text-white' }}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
                         <span>Dashboard</span>
                     </a>
 
                     {{-- Section: Manajemen User --}}
-                    <div class="pt-4 pb-2 px-4">
-                        <span class="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider">Manajemen User</span>
+                    <div class="pt-3 pb-1 px-3">
+                        <span class="text-[9px] font-bold text-[#A1A1AA] uppercase tracking-wider">Manajemen User</span>
                     </div>
 
                     <a href="{{ route('admin.users.admins') }}" 
-                       class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all
                               {{ request()->routeIs('admin.users.admins*') ? 'bg-[#B22222] text-white shadow-lg shadow-[#B22222]/20' : 'text-[#A1A1AA] hover:bg-[#111111] hover:text-white' }}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
                         <span>Admin</span>
