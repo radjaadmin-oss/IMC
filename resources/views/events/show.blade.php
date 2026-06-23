@@ -146,8 +146,28 @@
                 {{-- Price --}}
                 <div class="pb-4 border-b border-white/10">
                     <p class="text-[10px] text-gray-500 uppercase mb-1.5">Harga Tiket</p>
-                    @if($event->price == 0)
+                    @php
+                        // Determine price display
+                        if ($event->is_free) {
+                            $displayPrice = 0;
+                            $priceLabel = 'GRATIS';
+                        } elseif ($event->has_ticket_categories && $event->ticketCategories->isNotEmpty()) {
+                            $displayPrice = $event->ticketCategories->min('price');
+                            $priceLabel = 'Mulai dari Rp ' . number_format($displayPrice, 0, ',', '.');
+                        } else {
+                            $displayPrice = $event->price;
+                            $priceLabel = 'Rp ' . number_format($displayPrice, 0, ',', '.');
+                        }
+                    @endphp
+                    
+                    @if($event->is_free)
                         <p class="text-2xl font-bold text-green-400">GRATIS</p>
+                    @elseif($event->has_ticket_categories && $event->ticketCategories->isNotEmpty())
+                        <p class="text-xl font-bold text-[#D4AF37]">
+                            Mulai dari<br>
+                            Rp {{ number_format($event->ticketCategories->min('price'), 0, ',', '.') }}
+                        </p>
+                        <p class="text-[10px] text-gray-600">per tiket</p>
                     @else
                         <p class="text-2xl font-bold text-[#D4AF37]">
                             Rp {{ number_format($event->price, 0, ',', '.') }}
@@ -158,9 +178,18 @@
 
                 {{-- Quota --}}
                 <div class="space-y-3">
+                    @php
+                        // Calculate total quota
+                        if ($event->has_ticket_categories && $event->ticketCategories->isNotEmpty()) {
+                            $totalQuota = $event->ticketCategories->sum('quota');
+                        } else {
+                            $totalQuota = $event->quota;
+                        }
+                    @endphp
+                    
                     <div class="flex justify-between text-xs">
                         <span class="text-gray-400">Total Kuota</span>
-                        <span class="text-white font-semibold">{{ number_format($event->quota) }}</span>
+                        <span class="text-white font-semibold">{{ number_format($totalQuota) }}</span>
                     </div>
                     <div class="flex justify-between text-xs">
                         <span class="text-gray-400">Tersisa</span>
@@ -171,8 +200,8 @@
 
                     {{-- Progress --}}
                     @php
-                        $soldPercent = $event->quota > 0
-                            ? round((($event->quota - $event->remaining_quota) / $event->quota) * 100)
+                        $soldPercent = $totalQuota > 0
+                            ? round((($totalQuota - $event->remaining_quota) / $totalQuota) * 100)
                             : 0;
                     @endphp
                     <div>
