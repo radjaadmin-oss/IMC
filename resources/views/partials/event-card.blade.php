@@ -86,36 +86,76 @@
             @endif
         </div>
 
-        {{-- Organizer/Category Info (Loket style - at bottom) --}}
-        <div class="flex items-center justify-between pt-2 border-t border-white/5">
-            {{-- Category/Organizer --}}
-            @if($event->category)
-                <div class="flex items-center gap-1.5">
-                    <div class="w-5 h-5 rounded-full bg-[#F5C518]/10 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-3 h-3 text-[#F5C518]" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <span class="text-[10px] text-gray-400 truncate">{{ $event->category->name }}</span>
-                </div>
-            @endif
-
-            {{-- Quota Badge --}}
-            @if(!$event->is_sold_out)
-                <div class="text-right">
-                    @if($event->remaining_quota <= 10 && $event->remaining_quota > 0)
-                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/10 text-yellow-400 font-semibold">
-                            {{ $event->remaining_quota }} tersisa
-                        </span>
+        {{-- Organizer Info (Artatix style - at bottom) --}}
+        <div class="pt-2.5 border-t border-white/5">
+            <div class="flex items-center gap-2">
+                {{-- Organizer Avatar --}}
+                @if($event->organizer)
+                    @if($event->organizer->avatar)
+                        <img src="{{ asset('storage/' . $event->organizer->avatar) }}"
+                             alt="{{ $event->organizer->name }}"
+                             class="w-6 h-6 rounded-full object-cover flex-shrink-0 border border-white/10"/>
                     @else
-                        <span class="text-[10px] text-gray-500">
-                            {{ number_format($event->remaining_quota) }} tiket
-                        </span>
+                        <div class="w-6 h-6 rounded-full bg-[#F5C518]/10 flex items-center justify-center flex-shrink-0 border border-white/10">
+                            <span class="text-[#F5C518] font-bold text-[10px]">
+                                {{ strtoupper(substr($event->organizer->name, 0, 1)) }}
+                            </span>
+                        </div>
                     @endif
-                </div>
-            @endif
+
+                    {{-- Organizer Name & Company (with scroll for long text) --}}
+                    <div class="flex-1 min-w-0 overflow-hidden">
+                        <p class="text-[10px] text-gray-500 leading-tight">Presented by</p>
+                        @if($event->organizer->company_name && strlen($event->organizer->company_name) > 25)
+                            {{-- Scrolling text for long company names --}}
+                            <div class="relative h-4 overflow-hidden group/scroll">
+                                <div class="absolute whitespace-nowrap animate-scroll group-hover/scroll:animation-paused">
+                                    <span class="text-xs text-white font-semibold">{{ $event->organizer->company_name }}</span>
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-xs text-white font-semibold truncate leading-tight">
+                                {{ $event->organizer->company_name ?? $event->organizer->name }}
+                            </p>
+                        @endif
+                    </div>
+
+                    {{-- Quota Badge (small, on the right) --}}
+                    @if(!$event->is_sold_out)
+                        <div class="flex-shrink-0">
+                            @if($event->remaining_quota <= 10 && $event->remaining_quota > 0)
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/10 text-yellow-400 font-semibold whitespace-nowrap">
+                                    {{ $event->remaining_quota }} tersisa
+                                </span>
+                            @endif
+                        </div>
+                    @endif
+                @endif
+            </div>
         </div>
 
     </div>
 
 </a>
+
+{{-- CSS for scrolling text animation --}}
+<style>
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.animate-scroll {
+    animation: scroll 10s linear infinite;
+    padding-right: 20px;
+}
+
+.animate-scroll span {
+    display: inline-block;
+    padding-right: 50px;
+}
+
+.animation-paused {
+    animation-play-state: paused;
+}
+</style>

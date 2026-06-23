@@ -9,13 +9,18 @@ class EventController extends Controller
 {
     public function index(): View
     {
-        $events = Event::latest()->paginate(12);
+        $events = Event::with(['organizer', 'category'])
+            ->latest()
+            ->paginate(12);
         
         return view('events.index', compact('events'));
     }
 
     public function show(Event $event): View
     {
+        // Eager load relationships
+        $event->load(['organizer', 'category', 'ticketCategories']);
+        
         return view('events.show', compact('event'));
     }
 }
