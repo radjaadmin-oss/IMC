@@ -9,7 +9,7 @@
 @section('content')
 
 {{-- START HERO BANNER SECTION --}}
-<section class="mt-4 mb-6">
+<section class="mt-4 mb-5">
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="swiper hero-swiper rounded-[28px] overflow-hidden shadow-2xl relative">
@@ -81,7 +81,7 @@
 {{-- START TRUST BADGES SECTION --}}
 <section class="py-6 border-y border-white/5">
     <div class="max-w-[1280px] mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             
             {{-- Badge 1: 100% Aman --}}
             <div class="flex items-center gap-4 p-5 rounded-2xl bg-[#0B1220] border border-white/5">
@@ -142,38 +142,36 @@
 {{-- END TRUST BADGES SECTION --}}
 {{-- START REKOMENDASI EVENT SECTION --}}
 @if(($settings->show_recommended_events ?? true) && isset($recommendedEvents) && $recommendedEvents->isNotEmpty())
-<section class="py-14">
+<section class="py-10">
     <div class="max-w-[1280px] mx-auto px-6">
         
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h2 class="text-2xl font-bold text-white">{{ $settings->recommended_events_title ?? 'Rekomendasi Event' }}</h2>
-                @if($settings->recommended_events_subtitle)
-                    <p class="text-gray-400 mt-1">{{ $settings->recommended_events_subtitle }}</p>
-                @endif
-            </div>
-            <a href="{{ route('events.index') }}" class="flex items-center gap-2 text-[#F5C518] text-sm font-semibold hover:gap-3 transition-all">
+        <div class="flex items-center justify-between mb-5">
+            <h2 class="text-xl font-bold text-white">{{ $settings->recommended_events_title ?? 'Rekomendasi Event' }}</h2>
+            <a href="{{ route('events.index') }}" class="flex items-center gap-1.5 text-[#F5C518] text-xs font-semibold hover:gap-2 transition-all">
                 Lihat Semua
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
-        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach($recommendedEvents as $event)
-                    @include('partials.event-card', ['event' => $event])
-                @endforeach
-            </div>
         </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            @foreach($recommendedEvents as $event)
+                @include('partials.event-card', ['event' => $event])
+            @endforeach
+        </div>
+        
+    </div>
 </section>
 @endif
 {{-- END REKOMENDASI EVENT SECTION --}}
 {{-- START KATEGORI EVENT SECTION --}}
 @if($settings->show_categories ?? true)
-<section class="py-14 bg-[#050B14]/50">
+<section class="py-10 bg-[#050B14]/50">
     <div class="max-w-[1280px] mx-auto px-6">
         
-        <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-white">{{ $settings->categories_title ?? 'Kategori Event' }}</h2>
+        <div class="text-center mb-5">
+            <h2 class="text-xl font-bold text-white">{{ $settings->categories_title ?? 'Kategori Event' }}</h2>
             @if($settings->categories_subtitle)
                 <p class="text-gray-400 mt-2">{{ $settings->categories_subtitle }}</p>
             @endif
@@ -240,23 +238,23 @@
 
 {{-- START EVENT TERDEKAT SECTION --}}
 @if(($settings->show_nearest_events ?? true) && isset($nearestEvents) && $nearestEvents->isNotEmpty())
-<section class="py-14">
+<section class="py-10">
     <div class="max-w-[1280px] mx-auto px-6">
         
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-5">
             <div>
-                <h2 class="text-2xl font-bold text-white">{{ $settings->nearest_events_title ?? 'Event Terdekat' }}</h2>
+                <h2 class="text-xl font-bold text-white">{{ $settings->nearest_events_title ?? 'Event Terdekat' }}</h2>
                 @if($settings->nearest_events_subtitle)
                     <p class="text-gray-400 mt-1">{{ $settings->nearest_events_subtitle }}</p>
                 @endif
             </div>
-            <a href="{{ route('events.index') }}" class="flex items-center gap-2 text-[#F5C518] text-sm font-semibold hover:gap-3 transition-all">
+            <a href="{{ route('events.index') }}" class="flex items-center gap-1.5 text-[#F5C518] text-xs font-semibold hover:gap-2 transition-all">
                 Lihat Event Lainnya
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
-        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach($nearestEvents->take(8) as $event)
                     @include('partials.event-card', ['event' => $event])
                 @endforeach
@@ -267,23 +265,23 @@
 {{-- END EVENT TERDEKAT SECTION --}}
 {{-- START UPCOMING EVENT SECTION --}}
 @if(($settings->show_upcoming_events ?? true) && isset($upcomingEvents) && $upcomingEvents->isNotEmpty())
-<section class="py-14 bg-[#050B14]/50">
+<section class="py-10 bg-[#050B14]/50">
     <div class="max-w-[1280px] mx-auto px-6">
         
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-5">
             <div>
-                <h2 class="text-2xl font-bold text-white">{{ $settings->upcoming_events_title ?? 'Upcoming Event' }}</h2>
+                <h2 class="text-xl font-bold text-white">{{ $settings->upcoming_events_title ?? 'Upcoming Event' }}</h2>
                 @if($settings->upcoming_events_subtitle)
                     <p class="text-gray-400 mt-1">{{ $settings->upcoming_events_subtitle }}</p>
                 @endif
             </div>
-            <a href="{{ route('events.index') }}" class="flex items-center gap-2 text-[#F5C518] text-sm font-semibold hover:gap-3 transition-all">
+            <a href="{{ route('events.index') }}" class="flex items-center gap-1.5 text-[#F5C518] text-xs font-semibold hover:gap-2 transition-all">
                 Lihat Semua
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
-        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach($upcomingEvents->take(8) as $event)
                     @include('partials.event-card', ['event' => $event])
                 @endforeach
@@ -295,23 +293,23 @@
 
 {{-- START POPULAR EVENT SECTION --}}
 @if(($settings->show_popular_events ?? true) && isset($popularEvents) && $popularEvents->isNotEmpty())
-<section class="py-14">
+<section class="py-10">
     <div class="max-w-[1280px] mx-auto px-6">
         
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-5">
             <div>
-                <h2 class="text-2xl font-bold text-white">{{ $settings->popular_events_title ?? 'Popular Event' }}</h2>
+                <h2 class="text-xl font-bold text-white">{{ $settings->popular_events_title ?? 'Popular Event' }}</h2>
                 @if($settings->popular_events_subtitle)
                     <p class="text-gray-400 mt-1">{{ $settings->popular_events_subtitle }}</p>
                 @endif
             </div>
-            <a href="{{ route('events.index', ['sort' => 'popular']) }}" class="flex items-center gap-2 text-[#F5C518] text-sm font-semibold hover:gap-3 transition-all">
+            <a href="{{ route('events.index', ['sort' => 'popular']) }}" class="flex items-center gap-1.5 text-[#F5C518] text-xs font-semibold hover:gap-2 transition-all">
                 Lihat Semua
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
-        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach($popularEvents->take(8) as $event)
                     @include('partials.event-card', ['event' => $event])
                 @endforeach
@@ -327,12 +325,12 @@
         
         <div class="bg-[#0B1220] rounded-[28px] p-10 border border-white/5">
             
-            <h2 class="text-2xl font-bold text-white mb-2 text-center">{{ $settings->regions_title ?? 'Temukan Event Menarik di Kotamu' }}</h2>
+            <h2 class="text-xl font-bold text-white mb-2 text-center">{{ $settings->regions_title ?? 'Temukan Event Menarik di Kotamu' }}</h2>
             <p class="text-gray-400 text-center mb-8 max-w-2xl mx-auto">
                 {{ $settings->regions_subtitle ?? 'Jelajahi berbagai event seru di kota-kota besar Indonesia. Pilih kotamu dan temukan pengalaman tak terlupakan!' }}
             </p>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-5 lg:gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 md:gap-5 lg:gap-4">
                 
                 @php
                 $cities = [
