@@ -141,7 +141,7 @@
 </section>
 {{-- END TRUST BADGES SECTION --}}
 {{-- START REKOMENDASI EVENT SECTION --}}
-@if($settings->show_recommended_events ?? true)
+@if(($settings->show_recommended_events ?? true) && isset($recommendedEvents) && $recommendedEvents->isNotEmpty())
 <section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
@@ -158,25 +158,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
-        </div>
-        
-        @if(isset($recommendedEvents) && $recommendedEvents->isNotEmpty())
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($recommendedEvents as $event)
                     @include('partials.event-card', ['event' => $event])
                 @endforeach
             </div>
-        @else
-            <div class="text-center py-20 bg-[#0B1220] rounded-2xl border border-white/5">
-                <svg class="w-16 h-16 text-gray-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
-                </svg>
-                <p class="text-gray-500 text-lg">Belum ada event rekomendasi</p>
-                <p class="text-gray-600 text-sm mt-2">Event yang ditandai sebagai "Rekomendasi" akan muncul di sini</p>
-            </div>
-        @endif
-        
-    </div>
+        </div>
 </section>
 @endif
 {{-- END REKOMENDASI EVENT SECTION --}}
@@ -252,7 +239,7 @@
 {{-- END KATEGORI EVENT SECTION --}}
 
 {{-- START EVENT TERDEKAT SECTION --}}
-@if($settings->show_nearest_events ?? true)
+@if(($settings->show_nearest_events ?? true) && isset($nearestEvents) && $nearestEvents->isNotEmpty())
 <section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
@@ -269,30 +256,17 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
-        </div>
-        
-        @if(isset($nearestEvents) && $nearestEvents->isNotEmpty())
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($nearestEvents->take(8) as $event)
                     @include('partials.event-card', ['event' => $event])
                 @endforeach
             </div>
-        @else
-            <div class="text-center py-20 bg-[#0B1220] rounded-2xl border border-white/5">
-                <svg class="w-16 h-16 text-gray-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                <p class="text-gray-500 text-lg">Belum ada event terdekat</p>
-                <p class="text-gray-600 text-sm mt-2">Event yang ditandai sebagai "Event Terdekat" akan muncul di sini</p>
-            </div>
-        @endif
-        
-    </div>
+        </div>
 </section>
 @endif
 {{-- END EVENT TERDEKAT SECTION --}}
 {{-- START UPCOMING EVENT SECTION --}}
-@if($settings->show_upcoming_events ?? true)
+@if(($settings->show_upcoming_events ?? true) && isset($upcomingEvents) && $upcomingEvents->isNotEmpty())
 <section class="py-14 bg-[#050B14]/50">
     <div class="max-w-[1280px] mx-auto px-6">
         
@@ -309,31 +283,18 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
-        </div>
-        
-        @if(isset($upcomingEvents) && $upcomingEvents->isNotEmpty())
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($upcomingEvents->take(8) as $event)
                     @include('partials.event-card', ['event' => $event])
                 @endforeach
             </div>
-        @else
-            <div class="text-center py-20 bg-[#0B1220] rounded-2xl border border-white/5">
-                <svg class="w-16 h-16 text-gray-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                <p class="text-gray-500 text-lg">Belum ada upcoming event</p>
-                <p class="text-gray-600 text-sm mt-2">Event yang ditandai sebagai "Upcoming" akan muncul di sini</p>
-            </div>
-        @endif
-        
-    </div>
+        </div>
 </section>
 @endif
 {{-- END UPCOMING EVENT SECTION --}}
 
 {{-- START POPULAR EVENT SECTION --}}
-@if($settings->show_popular_events ?? true)
+@if(($settings->show_popular_events ?? true) && isset($popularEvents) && $popularEvents->isNotEmpty())
 <section class="py-14">
     <div class="max-w-[1280px] mx-auto px-6">
         
@@ -350,25 +311,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
-        </div>
-        
-        @if(isset($popularEvents) && $popularEvents->isNotEmpty())
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($popularEvents->take(8) as $event)
                     @include('partials.event-card', ['event' => $event])
                 @endforeach
             </div>
-        @else
-            <div class="text-center py-20 bg-[#0B1220] rounded-2xl border border-white/5">
-                <svg class="w-16 h-16 text-gray-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                </svg>
-                <p class="text-gray-500 text-lg">Belum ada event populer</p>
-                <p class="text-gray-600 text-sm mt-2">Event yang ditandai sebagai "Popular" akan muncul di sini</p>
-            </div>
-        @endif
-        
-    </div>
+        </div>
 </section>
 @endif
 {{-- END POPULAR EVENT SECTION --}}
