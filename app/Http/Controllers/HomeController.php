@@ -25,34 +25,39 @@ class HomeController extends Controller
         }
 
         // ALL EVENTS (fallback)
-        $events = Event::where('date', '>=', now())
-            ->latest()
-            ->take(8)
-            ->get();
-
-        // SECTION-BASED EVENTS
-        $recommendedEvents = Event::where('show_in_recommended', true)
+        $events = Event::where('status', 'approved')
             ->where('date', '>=', now())
             ->latest()
-            ->take(8)
+            ->take(4)
             ->get();
 
-        $nearestEvents = Event::where('show_in_nearest', true)
+        // SECTION-BASED EVENTS (only show where admin checked the box)
+        $recommendedEvents = Event::where('status', 'approved')
+            ->where('show_in_recommended', true)
+            ->where('date', '>=', now())
+            ->latest()
+            ->take(4)
+            ->get();
+
+        $nearestEvents = Event::where('status', 'approved')
+            ->where('show_in_nearest', true)
             ->where('date', '>=', now())
             ->orderBy('date', 'asc')
-            ->take(8)
+            ->take(4)
             ->get();
 
-        $upcomingEvents = Event::where('show_in_upcoming', true)
+        $upcomingEvents = Event::where('status', 'approved')
+            ->where('show_in_upcoming', true)
             ->where('date', '>=', now())
             ->orderBy('date', 'asc')
-            ->take(8)
+            ->take(4)
             ->get();
 
-        $popularEvents = Event::where('show_in_popular', true)
+        $popularEvents = Event::where('status', 'approved')
+            ->where('show_in_popular', true)
             ->where('date', '>=', now())
-            ->orderByDesc('views')
-            ->take(8)
+            ->orderByDesc('sold_count') // Sort by sold count, not views
+            ->take(4)
             ->get();
 
         return view('welcome', compact(
