@@ -7,7 +7,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Manajemen Event Organizer</h1>
+            <h1 class="text-xl font-bold text-white">Manajemen Event Organizer</h1>
             <p class="text-[#94A3B8] mt-1">Kelola akun event organizer dan approval</p>
         </div>
     </div>
@@ -23,58 +23,58 @@
     @endif
 
     {{-- Statistics Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-[#22C55E]/10 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-[#22C55E]/10 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'event_organizer')->where('status', 'active')->count() }}</div>
+            <div class="text-xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'event_organizer')->where('status', 'active')->count() }}</div>
             <div class="text-[#94A3B8] text-sm">EO Aktif</div>
         </div>
 
-        <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+        <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-[#F59E0B]/10 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-[#F59E0B]/10 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'event_organizer')->where('status', 'pending')->count() }}</div>
+            <div class="text-xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'event_organizer')->where('status', 'pending')->count() }}</div>
             <div class="text-[#94A3B8] text-sm">Menunggu Approval</div>
         </div>
 
-        <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+        <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-[#EF4444]/10 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-[#EF4444]/10 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'event_organizer')->where('status', 'suspended')->count() }}</div>
+            <div class="text-xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'event_organizer')->where('status', 'suspended')->count() }}</div>
             <div class="text-[#94A3B8] text-sm">Suspended</div>
         </div>
 
-        <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+        <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-[#64748B]/10 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#64748B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-[#64748B]/10 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#64748B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'event_organizer')->where('status', 'rejected')->count() }}</div>
+            <div class="text-xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'event_organizer')->where('status', 'rejected')->count() }}</div>
             <div class="text-[#94A3B8] text-sm">Rejected</div>
         </div>
     </div>
 
     {{-- Search & Filter --}}
-    <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+    <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
         <form method="GET" action="{{ route('admin.users.event-organizers') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             {{-- Search --}}
             <div class="md:col-span-2">
@@ -202,7 +202,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-[#64748B]">
+                        <td colspan="6" class="px-6 py-8 text-center text-[#64748B]">
                             <div class="flex flex-col items-center gap-3">
                                 <svg class="w-16 h-16 text-[#242424]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -231,7 +231,7 @@
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-white">Detail Event Organizer</h3>
             <button onclick="closeDetailModal()" class="text-[#94A3B8] hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
@@ -274,7 +274,7 @@
                             </svg>
                             <span class="text-xs text-[#64748B]">Total Event</span>
                         </div>
-                        <div class="text-2xl font-bold text-white" id="detail_events_count"></div>
+                        <div class="text-xl font-bold text-white" id="detail_events_count"></div>
                     </div>
                     <div class="bg-[#0A0A0A] rounded-xl p-4">
                         <div class="flex items-center gap-2 mb-2">

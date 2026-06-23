@@ -7,7 +7,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Manajemen Admin</h1>
+            <h1 class="text-xl font-bold text-white">Manajemen Admin</h1>
             <p class="text-[#94A3B8] mt-1">Kelola akun administrator sistem</p>
         </div>
         <button onclick="openCreateModal()" class="px-6 py-3 bg-[#B22222] text-white rounded-xl font-semibold hover:bg-[#8B1A1A] transition-all duration-300 flex items-center gap-2">
@@ -38,7 +38,7 @@
     @endif
 
     {{-- Search & Filter --}}
-    <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+    <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
         <form method="GET" action="{{ route('admin.users.admins') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             {{-- Search --}}
             <div class="md:col-span-2">
@@ -132,7 +132,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-[#64748B]">
+                        <td colspan="5" class="px-6 py-8 text-center text-[#64748B]">
                             <div class="flex flex-col items-center gap-3">
                                 <svg class="w-16 h-16 text-[#242424]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
@@ -161,13 +161,13 @@
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-white">Tambah Admin Baru</h3>
             <button onclick="closeCreateModal()" class="text-[#94A3B8] hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
 
-        <form action="{{ route('admin.users.admins.store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('admin.users.admins.store') }}" method="POST" class="space-y-3">
             @csrf
             <div>
                 <label class="block text-[#94A3B8] text-sm font-semibold mb-2">Nama Lengkap</label>
@@ -215,13 +215,13 @@
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-white">Edit Admin</h3>
             <button onclick="closeEditModal()" class="text-[#94A3B8] hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
 
-        <form id="editForm" method="POST" class="space-y-4">
+        <form id="editForm" method="POST" class="space-y-3">
             @csrf
             @method('PUT')
             

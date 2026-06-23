@@ -7,7 +7,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Manajemen Customer</h1>
+            <h1 class="text-xl font-bold text-white">Manajemen Customer</h1>
             <p class="text-[#94A3B8] mt-1">Kelola data customer dan riwayat pembelian</p>
         </div>
     </div>
@@ -23,58 +23,58 @@
     @endif
 
     {{-- Statistics Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-[#3B82F6]/10 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#3B82F6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-[#3B82F6]/10 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#3B82F6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'user')->count() }}</div>
+            <div class="text-xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'user')->count() }}</div>
             <div class="text-[#94A3B8] text-sm">Total Customer</div>
         </div>
 
-        <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+        <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-[#22C55E]/10 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-[#22C55E]/10 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#22C55E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'user')->where('status', 'active')->count() }}</div>
+            <div class="text-xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'user')->where('status', 'active')->count() }}</div>
             <div class="text-[#94A3B8] text-sm">Customer Aktif</div>
         </div>
 
-        <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+        <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-[#FFD700]/10 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-[#FFD700]/10 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-white mb-1">{{ \App\Models\Order::where('status', 'paid')->count() }}</div>
+            <div class="text-xl font-bold text-white mb-1">{{ \App\Models\Order::where('status', 'paid')->count() }}</div>
             <div class="text-[#94A3B8] text-sm">Total Pembelian</div>
         </div>
 
-        <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+        <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-[#EF4444]/10 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-[#EF4444]/10 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                     </svg>
                 </div>
             </div>
-            <div class="text-3xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'user')->where('status', 'suspended')->count() }}</div>
+            <div class="text-xl font-bold text-white mb-1">{{ \App\Models\User::where('role', 'user')->where('status', 'suspended')->count() }}</div>
             <div class="text-[#94A3B8] text-sm">Suspended</div>
         </div>
     </div>
 
     {{-- Search & Filter --}}
-    <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">
+    <div class="bg-[#111111] border border-[#242424] rounded-xl p-4">
         <form method="GET" action="{{ route('admin.users.customers') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             {{-- Search --}}
             <div class="md:col-span-2">
@@ -195,7 +195,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-[#64748B]">
+                        <td colspan="7" class="px-6 py-8 text-center text-[#64748B]">
                             <div class="flex flex-col items-center gap-3">
                                 <svg class="w-16 h-16 text-[#242424]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
@@ -224,7 +224,7 @@
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-white">Detail Customer</h3>
             <button onclick="closeDetailModal()" class="text-[#94A3B8] hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
@@ -253,7 +253,7 @@
                             </svg>
                             <span class="text-xs text-[#64748B]">Total Order</span>
                         </div>
-                        <div class="text-2xl font-bold text-white" id="detail_orders_count"></div>
+                        <div class="text-xl font-bold text-white" id="detail_orders_count"></div>
                     </div>
                     <div class="bg-[#0A0A0A] rounded-xl p-4">
                         <div class="flex items-center gap-2 mb-2">
@@ -262,7 +262,7 @@
                             </svg>
                             <span class="text-xs text-[#64748B]">Total Spending</span>
                         </div>
-                        <div class="text-lg font-bold text-[#22C55E]" id="detail_total_spent"></div>
+                        <div class="text-base font-bold text-[#22C55E]" id="detail_total_spent"></div>
                     </div>
                     <div class="bg-[#0A0A0A] rounded-xl p-4">
                         <div class="flex items-center gap-2 mb-2">
