@@ -25,11 +25,112 @@
 @endif
 
 {{-- FORM --}}
-<form action="{{ route('admin.homepage-settings.update') }}" method="POST">
+<form action="{{ route('admin.homepage-settings.update') }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
-    <div class="space-y-6">
+    <div class="space-y-4">
+
+        {{-- LOGO & BRANDING SECTION --}}
+        <div class="bg-[#0B1220] border border-white/5 rounded-xl p-5">
+            <h3 class="text-base font-bold text-white mb-4">Logo & Branding</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wider">Logo Situs</label>
+                    @if($settings->logo)
+                        <div class="mb-3">
+                            <img src="{{ asset('storage/' . $settings->logo) }}" class="w-32 h-auto rounded-lg border border-white/5">
+                            <p class="text-[10px] text-gray-500 mt-1">Logo saat ini</p>
+                        </div>
+                    @endif
+                    <input type="file" name="logo" accept="image/*" 
+                           class="w-full px-3 py-2 text-sm bg-[#050B14] border border-white/5 rounded-lg text-white file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#F5C518] file:text-black hover:file:bg-[#F5C518]/90 focus:outline-none focus:border-[#F5C518]">
+                    <p class="text-[10px] text-gray-500 mt-1">Format: PNG, JPG, SVG (Max: 2MB)</p>
+                    @error('logo')
+                        <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wider">Nama Situs *</label>
+                        <input type="text" name="site_name" 
+                               value="{{ old('site_name', $settings->site_name ?? 'RADJATIKET') }}" 
+                               required 
+                               class="w-full px-3 py-2 text-sm bg-[#050B14] border border-white/5 rounded-lg text-white focus:outline-none focus:border-[#F5C518]">
+                        @error('site_name')
+                            <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wider">Tagline</label>
+                        <input type="text" name="site_tagline" 
+                               value="{{ old('site_tagline', $settings->site_tagline) }}" 
+                               placeholder="Your Professional Ticketing Partner" 
+                               class="w-full px-3 py-2 text-sm bg-[#050B14] border border-white/5 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#F5C518]">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- HERO SECTION --}}
+        <div class="bg-[#0B1220] border border-white/5 rounded-xl p-5">
+            <h3 class="text-base font-bold text-white mb-4">Hero Banner</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wider">Judul Hero *</label>
+                    <input type="text" name="hero_title" 
+                           value="{{ old('hero_title', $settings->hero_title ?? 'Festival Musik Senja') }}" 
+                           required 
+                           class="w-full px-3 py-2 text-sm bg-[#050B14] border border-white/5 rounded-lg text-white focus:outline-none focus:border-[#F5C518]">
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-semibold text-[#94A3B8] mb-1.5 uppercase tracking-wider">Subtitle Hero</label>
+                    <input type="text" name="hero_subtitle" 
+                           value="{{ old('hero_subtitle', $settings->hero_subtitle) }}" 
+                           placeholder="Subtitle hero banner" 
+                           class="w-full px-3 py-2 text-sm bg-[#050B14] border border-white/5 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#F5C518]">
+                </div>
+            </div>
+        </div>
+
+        {{-- FEATURES SECTION --}}
+        <div class="bg-[#0B1220] border border-white/5 rounded-xl p-5">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-base font-bold text-white">Features Section</h3>
+                    <p class="text-xs text-[#94A3B8] mt-0.5">4 fitur unggulan yang ditampilkan di homepage</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" name="show_features" value="1" 
+                           {{ ($settings->show_features ?? true) ? 'checked' : '' }}
+                           class="sr-only peer">
+                    <div class="w-11 h-6 bg-[#050B14] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#F5C518]"></div>
+                </label>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for($i = 1; $i <= 4; $i++)
+                <div class="bg-[#050B14] border border-white/5 rounded-lg p-3">
+                    <p class="text-[10px] font-bold text-[#F5C518] mb-2 uppercase">Feature {{ $i }}</p>
+                    <div class="space-y-2">
+                        <input type="text" name="feature_{{ $i }}_title" 
+                               value="{{ old("feature_{$i}_title", $settings->{"feature_{$i}_title"} ?? '') }}" 
+                               placeholder="Judul" 
+                               class="w-full px-2.5 py-1.5 text-xs bg-black border border-white/5 rounded text-white placeholder-gray-600 focus:outline-none focus:border-[#F5C518]">
+                        <input type="text" name="feature_{{ $i }}_subtitle" 
+                               value="{{ old("feature_{$i}_subtitle", $settings->{"feature_{$i}_subtitle"} ?? '') }}" 
+                               placeholder="Subtitle" 
+                               class="w-full px-2.5 py-1.5 text-xs bg-black border border-white/5 rounded text-white placeholder-gray-600 focus:outline-none focus:border-[#F5C518]">
+                    </div>
+                </div>
+                @endfor
+            </div>
+        </div>
 
         {{-- REKOMENDASI EVENT SECTION --}}
         <div class="bg-[#111111] border border-[#242424] rounded-2xl p-6">

@@ -83,15 +83,26 @@
             <div class="flex justify-between items-center h-[72px] relative z-10">
                 
                 {{-- Logo --}}
+                {{-- Logo --}}
                 <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/>
-                        </svg>
-                    </div>
-                    <span class="text-xl font-black tracking-tight text-white group-hover:text-[#F5C518] transition-colors">
-                        RADJATIKET
-                    </span>
+                    @php
+                        $settings = \App\Models\HomepageSetting::getSettings();
+                    @endphp
+                    
+                    @if($settings && $settings->logo)
+                        <img src="{{ asset('storage/' . $settings->logo) }}" 
+                             alt="{{ $settings->site_name ?? 'RADJATIKET' }}" 
+                             class="h-9 w-auto">
+                    @else
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-black tracking-tight text-white group-hover:text-[#F5C518] transition-colors">
+                            {{ $settings->site_name ?? 'RADJATIKET' }}
+                        </span>
+                    @endif
                 </a>
 
                 {{-- Menu Navigation --}}
