@@ -446,23 +446,38 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Toggle Categories Section
-document.getElementById('toggleCategories').addEventListener('change', function() {
-    const singleSection = document.getElementById('singlePriceSection');
-    const categoriesSection = document.getElementById('categoriesSection');
-    
-    if (this.checked) {
-        singleSection.classList.add('hidden');
-        categoriesSection.classList.remove('hidden');
-        
-        // Add default category if empty
-        if (document.getElementById('categoriesContainer').children.length === 0) {
-            addCategory();
+const toggleCategories = document.getElementById('toggleCategories');
+const singleSection = document.getElementById('singlePriceSection');
+const categoriesSection = document.getElementById('categoriesSection');
+
+if (toggleCategories) {
+    toggleCategories.addEventListener('change', function() {
+        if (this.checked) {
+            singleSection.classList.add('hidden');
+            categoriesSection.classList.remove('hidden');
+            
+            // Disable required validation on single price fields
+            const priceInput = singleSection.querySelector('input[name="price"]');
+            const quotaInput = singleSection.querySelector('input[name="quota"]');
+            if (priceInput) priceInput.removeAttribute('required');
+            if (quotaInput) quotaInput.removeAttribute('required');
+            
+            // Add default category if empty
+            if (document.getElementById('categoriesContainer').children.length === 0) {
+                addCategory();
+            }
+        } else {
+            singleSection.classList.remove('hidden');
+            categoriesSection.classList.add('hidden');
+            
+            // Re-enable required validation on single price fields
+            const priceInput = singleSection.querySelector('input[name="price"]');
+            const quotaInput = singleSection.querySelector('input[name="quota"]');
+            if (priceInput) priceInput.setAttribute('required', 'required');
+            if (quotaInput) quotaInput.setAttribute('required', 'required');
         }
-    } else {
-        singleSection.classList.remove('hidden');
-        categoriesSection.classList.add('hidden');
-    }
-});
+    });
+}
 
 // Add Category
 function addCategory() {
