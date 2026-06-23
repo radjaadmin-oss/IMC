@@ -10,9 +10,12 @@
     <p class="text-gray-400 text-sm mt-1">Buat event baru</p>
 </div>
 
-<div class="max-w-4xl">
+{{-- 2 COLUMN LAYOUT --}}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
     
-    <div class="bg-[#0B1220] rounded-xl border border-white/10 p-5">
+    {{-- LEFT: FORM (8 columns) --}}
+    <div class="lg:col-span-8">
+        <div class="bg-[#0B1220] rounded-xl border border-white/10 p-5">
         
         <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" id="eventForm">
             @csrf
@@ -391,6 +394,123 @@
     </div>
     
 </div>
+{{-- END LEFT COLUMN --}}
+
+{{-- RIGHT: LIVE PREVIEW (4 columns) --}}
+<div class="lg:col-span-4">
+    
+    {{-- STICKY PREVIEW --}}
+    <div class="sticky top-20">
+        
+        {{-- Preview Header --}}
+        <div class="mb-4">
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                Live Preview
+            </h2>
+            <p class="text-gray-400 text-xs mt-1">Tampilan card di homepage</p>
+        </div>
+
+        {{-- EVENT CARD PREVIEW --}}
+        <div class="bg-[#0B1220] rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#F5C518]/20" id="preview-card">
+            
+            {{-- Image --}}
+            <div class="relative aspect-[2/1] bg-gradient-to-br from-gray-800 via-gray-900 to-black overflow-hidden">
+                <img id="preview-card-image" 
+                     src="" 
+                     alt="Event Preview" 
+                     class="w-full h-full object-cover hidden">
+                <div id="preview-card-placeholder" class="w-full h-full flex items-center justify-center">
+                    <div class="text-center">
+                        <svg class="w-16 h-16 text-gray-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <p class="text-gray-600 text-xs">Upload gambar</p>
+                    </div>
+                </div>
+                
+                {{-- Badges --}}
+                <div class="absolute top-3 left-3 flex gap-2">
+                    <span id="preview-category-badge" class="hidden px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-500/90 text-white backdrop-blur-sm">
+                        Kategori
+                    </span>
+                </div>
+                
+                {{-- Sold Out Badge (if applicable) --}}
+                <div id="preview-soldout-badge" class="hidden absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center">
+                    <span class="text-2xl font-black text-red-400 tracking-wider transform -rotate-12">SOLD OUT</span>
+                </div>
+            </div>
+
+            {{-- Content --}}
+            <div class="p-4">
+                
+                {{-- Title --}}
+                <h3 id="preview-title" class="text-base font-bold text-white mb-2 line-clamp-2 min-h-[48px]">
+                    Nama Event Anda
+                </h3>
+
+                {{-- Date & Location --}}
+                <div class="space-y-1.5 mb-3">
+                    <div class="flex items-center gap-2 text-gray-400">
+                        <svg class="w-4 h-4 text-[#F5C518] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span id="preview-date" class="text-xs">Pilih tanggal</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-400">
+                        <svg class="w-4 h-4 text-[#F5C518] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <span id="preview-location" class="text-xs line-clamp-1">Lokasi event</span>
+                    </div>
+                </div>
+
+                {{-- Price & Quota --}}
+                <div class="flex items-center justify-between pt-3 border-t border-white/10">
+                    <div>
+                        <p class="text-[10px] text-gray-500 mb-0.5">Mulai dari</p>
+                        <p id="preview-price" class="text-lg font-black text-[#F5C518]">Rp 0</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-500 mb-0.5">Tersedia</p>
+                        <p id="preview-quota" class="text-sm font-bold text-white">0 tiket</p>
+                    </div>
+                </div>
+
+                {{-- Button --}}
+                <button class="w-full mt-3 py-2.5 rounded-xl bg-gradient-to-r from-[#F5C518] to-[#FFD700] text-black font-bold text-xs tracking-wide hover:from-[#FFD700] hover:to-[#F5C518] transition-all duration-300 shadow-lg cursor-not-allowed opacity-50">
+                    PREVIEW MODE
+                </button>
+
+            </div>
+
+        </div>
+
+        {{-- Preview Info --}}
+        <div class="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
+            <div class="flex items-start gap-2">
+                <svg class="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                <div class="flex-1">
+                    <p class="text-blue-300 font-semibold text-xs mb-1">💡 Tips Preview</p>
+                    <p class="text-blue-200 text-[11px]">Preview akan update otomatis saat Anda mengisi form. Simpan event untuk melihat tampilan final di homepage.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+{{-- END RIGHT COLUMN --}}
+
+</div>
+{{-- END 2 COLUMN LAYOUT --}}
 
 @endsection
 
@@ -425,6 +545,117 @@
 @push('scripts')
 <script>
 let categoryIndex = {{ old('has_ticket_categories') ? 1 : 0 }};
+
+// ========================================
+// LIVE PREVIEW FUNCTIONALITY
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Get form inputs
+    const titleInput = document.querySelector('input[name="title"]');
+    const locationInput = document.querySelector('input[name="location"]');
+    const dateInput = document.querySelector('input[name="date"]');
+    const priceInput = document.querySelector('input[name="price"]');
+    const quotaInput = document.querySelector('input[name="quota"]');
+    const categorySelect = document.querySelector('select[name="category_id"]');
+    const imageInput = document.getElementById('image-input');
+    
+    // Get preview elements
+    const previewTitle = document.getElementById('preview-title');
+    const previewLocation = document.getElementById('preview-location');
+    const previewDate = document.getElementById('preview-date');
+    const previewPrice = document.getElementById('preview-price');
+    const previewQuota = document.getElementById('preview-quota');
+    const previewCategoryBadge = document.getElementById('preview-category-badge');
+    const previewCardImage = document.getElementById('preview-card-image');
+    const previewCardPlaceholder = document.getElementById('preview-card-placeholder');
+    
+    // Update Title
+    if (titleInput) {
+        titleInput.addEventListener('input', function() {
+            previewTitle.textContent = this.value || 'Nama Event Anda';
+        });
+    }
+    
+    // Update Location
+    if (locationInput) {
+        locationInput.addEventListener('input', function() {
+            previewLocation.textContent = this.value || 'Lokasi event';
+        });
+    }
+    
+    // Update Date
+    if (dateInput) {
+        dateInput.addEventListener('change', function() {
+            if (this.value) {
+                const date = new Date(this.value);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                previewDate.textContent = date.toLocaleDateString('id-ID', options);
+            } else {
+                previewDate.textContent = 'Pilih tanggal';
+            }
+        });
+    }
+    
+    // Update Price
+    if (priceInput) {
+        priceInput.addEventListener('input', function() {
+            const price = parseInt(this.value) || 0;
+            if (price === 0) {
+                previewPrice.textContent = 'GRATIS';
+                previewPrice.classList.add('text-green-400');
+                previewPrice.classList.remove('text-[#F5C518]');
+            } else {
+                previewPrice.textContent = 'Rp ' + price.toLocaleString('id-ID');
+                previewPrice.classList.remove('text-green-400');
+                previewPrice.classList.add('text-[#F5C518]');
+            }
+        });
+    }
+    
+    // Update Quota
+    if (quotaInput) {
+        quotaInput.addEventListener('input', function() {
+            const quota = parseInt(this.value) || 0;
+            previewQuota.textContent = quota.toLocaleString('id-ID') + ' tiket';
+        });
+    }
+    
+    // Update Category Badge
+    if (categorySelect) {
+        categorySelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (this.value && selectedOption.text !== '-- Pilih Kategori --') {
+                previewCategoryBadge.textContent = selectedOption.text;
+                previewCategoryBadge.classList.remove('hidden');
+            } else {
+                previewCategoryBadge.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Update Image Preview (for live preview card)
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewCardImage.src = event.target.result;
+                    previewCardImage.classList.remove('hidden');
+                    previewCardPlaceholder.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+});
+
+// ========================================
+// ORIGINAL FUNCTIONS
+// ========================================
 
 // Fix dropdown styling on click (for browsers that don't support option CSS)
 document.addEventListener('DOMContentLoaded', function() {
@@ -515,6 +746,53 @@ function addCategory() {
                         <label class="block text-sm font-medium text-gray-300 mb-2">Harga <span class="text-red-400">*</span></label>
                         <input type="number" name="categories[${index}][price]" 
                                class="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition-colors" 
+                               placeholder="500000" min="0" step="1000" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Kuota <span class="text-red-400">*</span></label>
+                        <input type="number" name="categories[${index}][quota]" 
+                               class="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none transition-colors" 
+                               placeholder="100" min="1" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', categoryHtml);
+}
+
+// Remove Category
+function removeCategory(index) {
+    const categoryItem = document.querySelector(`.category-item[data-index="${index}"]`);
+    if (categoryItem) {
+        categoryItem.remove();
+    }
+}
+
+// Preview Event Image (for main image upload area)
+function previewEventImage(event) {
+    const file = event.target.files[0];
+    const container = document.getElementById('image-preview-container');
+    
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            container.innerHTML = `
+                <img src="${e.target.result}" 
+                     alt="Preview" 
+                     class="w-full h-full object-cover"
+                     id="preview-image"/>
+            `;
+        };
+        
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+@endpushurple-500 focus:outline-none transition-colors" 
                                placeholder="125000" min="0" step="1000" required>
                     </div>
                     <div>
