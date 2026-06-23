@@ -5,72 +5,73 @@
 @section('content')
 
 {{-- Header --}}
-<div class="mb-6">
-    <h1 class="text-2xl font-bold text-white">Edit Event</h1>
-    <p class="text-gray-400 mt-1">Ubah detail event</p>
+<div class="mb-4">
+    <h1 class="text-xl font-bold text-white">Edit Event</h1>
+    <p class="text-gray-400 text-sm mt-1">Ubah detail event</p>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
     
     {{-- LEFT: Form --}}
-    <div class="bg-[#0B1220] rounded-2xl border border-white/10 p-8">
+    <div class="lg:col-span-8">
+        <div class="bg-[#0B1220] rounded-xl border border-white/10 p-5">
         
         <form action="{{ route('admin.events.update', $event) }}" method="POST" enctype="multipart/form-data" id="eventForm">
             @csrf
             @method('PUT')
             
-            <div class="space-y-6">
+            <div class="space-y-4">
                 
                 {{-- Title --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-300 mb-2">
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5">
                         Nama Event <span class="text-red-400">*</span>
                     </label>
                     <input type="text" 
                            name="title"
                            value="{{ old('title', $event->title) }}"
-                           class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('title') border-red-500 @else border-white/10 @enderror 
+                           class="w-full px-3 py-2 text-sm rounded-lg bg-white/5 border @error('title') border-red-500 @else border-white/10 @enderror 
                                   text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-colors"
                            placeholder="Masukkan nama event"
                            required>
                     @error('title')
-                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
                 {{-- Location & Date --}}
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     
                     {{-- Location --}}
                     <div>
-                        <label class="block text-sm font-semibold text-gray-300 mb-2">
+                        <label class="block text-xs font-semibold text-gray-300 mb-1.5">
                             Lokasi <span class="text-red-400">*</span>
                         </label>
                         <input type="text" 
                                name="location"
                                value="{{ old('location', $event->location) }}"
-                               class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('location') border-red-500 @else border-white/10 @enderror 
+                               class="w-full px-3 py-2 text-sm rounded-lg bg-white/5 border @error('location') border-red-500 @else border-white/10 @enderror 
                                       text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-colors"
                                placeholder="Jakarta, Indonesia"
                                required>
                         @error('location')
-                            <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     {{-- Date --}}
                     <div>
-                        <label class="block text-sm font-semibold text-gray-300 mb-2">
+                        <label class="block text-xs font-semibold text-gray-300 mb-1.5">
                             Tanggal <span class="text-red-400">*</span>
                         </label>
                         <input type="date" 
                                name="date"
                                value="{{ old('date', $event->date->format('Y-m-d')) }}"
-                               class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('date') border-red-500 @else border-white/10 @enderror 
+                               class="w-full px-3 py-2 text-sm rounded-lg bg-white/5 border @error('date') border-red-500 @else border-white/10 @enderror 
                                       text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
                                required>
                         @error('date')
-                            <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -78,42 +79,42 @@
 
                 {{-- Time --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-300 mb-2">
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5">
                         Waktu
                     </label>
                     <input type="time" 
                            name="time"
                            value="{{ old('time', $event->time) }}"
-                           class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('time') border-red-500 @else border-white/10 @enderror 
+                           class="w-full px-3 py-2 text-sm rounded-lg bg-white/5 border @error('time') border-red-500 @else border-white/10 @enderror 
                                   text-white focus:outline-none focus:border-[#D4AF37] transition-colors">
                     @error('time')
-                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
                 {{-- Description --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-300 mb-2">
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5">
                         Deskripsi Event
                     </label>
                     <textarea name="description"
-                              rows="5"
-                              class="w-full px-4 py-3 rounded-xl bg-white/5 border @error('description') border-red-500 @else border-white/10 @enderror 
+                              rows="4"
+                              class="w-full px-3 py-2 text-sm rounded-lg bg-white/5 border @error('description') border-red-500 @else border-white/10 @enderror 
                                      text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-colors resize-none"
                               placeholder="Jelaskan detail event...">{{ old('description', $event->description) }}</textarea>
                     @error('description')
-                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
                 {{-- Event Category --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-300 mb-2">
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5">
                         Kategori Event <span class="text-red-400">*</span>
                     </label>
                     <select name="category_id" 
                             style="background-color: #1a2332 !important; color: #ffffff !important;"
-                            class="w-full px-4 py-3 rounded-xl border @error('category_id') border-red-500 @else border-white/10 @enderror 
+                            class="w-full px-3 py-2 text-sm rounded-lg border @error('category_id') border-red-500 @else border-white/10 @enderror 
                                    focus:outline-none focus:border-[#D4AF37] transition-colors category-select"
                             required>
                         <option value="" style="background-color: #1a2332; color: #9CA3AF;">-- Pilih Kategori --</option>
@@ -124,7 +125,7 @@
                         @endforeach
                     </select>
                     @error('category_id')
-                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                        <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
