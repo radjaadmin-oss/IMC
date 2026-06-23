@@ -25,35 +25,40 @@ class HomeController extends Controller
         }
 
         // ALL EVENTS (fallback)
-        $events = Event::where('status', 'approved')
+        $events = Event::with(['organizer', 'category'])
+            ->where('status', 'approved')
             ->where('date', '>=', now())
             ->latest()
             ->take(4)
             ->get();
 
         // SECTION-BASED EVENTS (only show where admin checked the box)
-        $recommendedEvents = Event::where('status', 'approved')
+        $recommendedEvents = Event::with(['organizer', 'category'])
+            ->where('status', 'approved')
             ->where('show_in_recommended', true)
             ->where('date', '>=', now())
             ->latest()
             ->take(4)
             ->get();
 
-        $nearestEvents = Event::where('status', 'approved')
+        $nearestEvents = Event::with(['organizer', 'category'])
+            ->where('status', 'approved')
             ->where('show_in_nearest', true)
             ->where('date', '>=', now())
             ->orderBy('date', 'asc')
             ->take(4)
             ->get();
 
-        $upcomingEvents = Event::where('status', 'approved')
+        $upcomingEvents = Event::with(['organizer', 'category'])
+            ->where('status', 'approved')
             ->where('show_in_upcoming', true)
             ->where('date', '>=', now())
             ->orderBy('date', 'asc')
             ->take(4)
             ->get();
 
-        $popularEvents = Event::where('status', 'approved')
+        $popularEvents = Event::with(['organizer', 'category'])
+            ->where('status', 'approved')
             ->where('show_in_popular', true)
             ->where('date', '>=', now())
             ->orderByDesc('sold_count') // Sort by sold count, not views
