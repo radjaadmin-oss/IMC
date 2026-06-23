@@ -128,15 +128,27 @@ class Event extends Model
     // Accessors
     public function getRemainingQuotaAttribute(): int
     {
-        $sold = $this->orders()
-            ->where('status', '!=', 'cancelled')
-            ->sum('quantity');
-
-        return max(0, $this->quota - $sold);
+        // If event uses ticket categories, calculate total from categories
+        if ($this->has_ticket_categories && $this->ticketCategories->isNotEmpty()) {
+            $totalCategoryQuota = $this->ticketCategories->sum('quota');
+            $totalCategorySold = $this->ticketCategories->sum('sold');
+            return max(0, $totalCategoryQuota - $totalCategorySold);
+        }
+        
+        // Otherwise use event's quota
+        return max(0, $this->quota - $this->sold_count);
     }
 
     public function getIsSoldOutAttribute(): bool
     {
+        // If event uses ticket categories, check if ALL categories are sold out
+        if ($this->has_ticket_categories && $this->ticketCategories->isNotEmpty()) {
+            return $this->ticketCategories->every(function($category) {
+                return $category->is_sold_out;
+            });
+        }
+        
+        // Otherwise check event quota
         return $this->remaining_quota <= 0;
     }
 

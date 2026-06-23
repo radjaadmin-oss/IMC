@@ -181,6 +181,8 @@
                                     <div class="text-xs text-[#94A3B8] mt-1">
                                         @if($event->is_free)
                                         <span class="text-[#22C55E]">GRATIS</span>
+                                        @elseif($event->has_ticket_categories && $event->ticketCategories->isNotEmpty())
+                                        <span class="text-[#FFD700]">Mulai dari Rp {{ number_format($event->ticketCategories->min('price'), 0, ',', '.') }}</span>
                                         @else
                                         <span class="text-[#FFD700]">Rp {{ number_format($event->price, 0, ',', '.') }}</span>
                                         @endif
