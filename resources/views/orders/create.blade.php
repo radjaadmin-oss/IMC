@@ -33,8 +33,30 @@
                 <div class="card-dark rounded-xl p-5">
                     <h2 class="text-sm font-bold text-white mb-4">Pilih Kategori Tiket</h2>
 
-                    @if($event->ticketCategories->isEmpty())
+                    @if($event->has_ticket_categories && $event->ticketCategories->isEmpty())
                         <p class="text-gray-500 text-sm">Belum ada kategori tiket tersedia.</p>
+                    @elseif(!$event->has_ticket_categories)
+                        {{-- Event without categories - use event price directly --}}
+                        <div class="p-4 rounded-lg border-2 border-[#D4AF37] bg-[#D4AF37]/10">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-white text-sm">Tiket Reguler</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $event->title }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-[#D4AF37] text-sm">
+                                        Rp {{ number_format($event->price, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-[10px] text-gray-500 mt-0.5">
+                                        {{ $event->quota - $event->sold_count }} tersisa
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="ticket_category_id" value="">
+                        <input type="hidden" id="eventPrice" value="{{ $event->price }}">
+                        <input type="hidden" id="eventQuota" value="{{ $event->quota - $event->sold_count }}">
+                        <input type="hidden" id="eventName" value="Tiket Reguler">
                     @else
                         <div class="space-y-3">
                             @foreach($event->ticketCategories as $category)
@@ -239,9 +261,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnText = document.getElementById('btnText');
     const btnLoading = document.getElementById('btnLoading');
 
+    // Check if event has ticket categories
+    const eventPriceInput = document.getElementById('eventPrice');
+    const eventQuotaInput = document.getElementById('eventQuota');
+    const eventNameInput = document.getElementById('eventName');
+    
     let selectedPrice = 0;
     let selectedCategoryName = '';
     let maxQuota = 10;
+
+    // If event doesn't have ticket categories, use event price directly
+    if (eventPriceInput) {
+        selectedPrice = parseFloat(eventPriceInput.value) || 0;
+        selectedCategoryName = eventNameInput.value || 'Tiket Reguler';
+        maxQuota = parseInt(eventQuotaInput.value) || 10;
+        quantityInput.max = Math.min(maxQuota, 10);
+        if (maxInfoEl) {
+            maxInfoEl.textContent = `Maksimal ${quantityInput.max} tiket`;
+        }
+        updateSummary(); // Initial calculation
+    }
 
     function updateSummary() {
         const qty = parseInt(quantityInput.value) || 1;
