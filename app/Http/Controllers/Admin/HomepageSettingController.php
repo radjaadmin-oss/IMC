@@ -23,6 +23,26 @@ class HomepageSettingController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
+            // Logo & Branding
+            'logo' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:2048',
+            'site_name' => 'required|string|max:255',
+            'site_tagline' => 'nullable|string|max:255',
+            
+            // Hero Section
+            'hero_title' => 'required|string|max:255',
+            'hero_subtitle' => 'nullable|string',
+            
+            // Features
+            'show_features' => 'nullable|boolean',
+            'feature_1_title' => 'nullable|string|max:255',
+            'feature_1_subtitle' => 'nullable|string|max:255',
+            'feature_2_title' => 'nullable|string|max:255',
+            'feature_2_subtitle' => 'nullable|string|max:255',
+            'feature_3_title' => 'nullable|string|max:255',
+            'feature_3_subtitle' => 'nullable|string|max:255',
+            'feature_4_title' => 'nullable|string|max:255',
+            'feature_4_subtitle' => 'nullable|string|max:255',
+            
             // Rekomendasi Event
             'show_recommended_events' => 'nullable|boolean',
             'recommended_events_title' => 'required|string|max:255',
@@ -54,7 +74,20 @@ class HomepageSettingController extends Controller
             'regions_subtitle' => 'nullable|string|max:255',
         ]);
 
+        $settings = HomepageSetting::getSettings();
+        
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo
+            if ($settings->logo) {
+                \Storage::disk('public')->delete($settings->logo);
+            }
+            
+            $validated['logo'] = $request->file('logo')->store('logos', 'public');
+        }
+
         // Convert checkbox values (if unchecked, they won't be in request)
+        $validated['show_features'] = $request->has('show_features');
         $validated['show_recommended_events'] = $request->has('show_recommended_events');
         $validated['show_nearest_events'] = $request->has('show_nearest_events');
         $validated['show_upcoming_events'] = $request->has('show_upcoming_events');
@@ -62,7 +95,6 @@ class HomepageSettingController extends Controller
         $validated['show_categories'] = $request->has('show_categories');
         $validated['show_regions'] = $request->has('show_regions');
 
-        $settings = HomepageSetting::getSettings();
         $settings->update($validated);
 
         return redirect()

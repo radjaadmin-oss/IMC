@@ -10,6 +10,20 @@ class HomepageSetting extends Model
     use HasFactory;
 
     protected $fillable = [
+        'logo',
+        'site_name',
+        'site_tagline',
+        'hero_title',
+        'hero_subtitle',
+        'show_features',
+        'feature_1_title',
+        'feature_1_subtitle',
+        'feature_2_title',
+        'feature_2_subtitle',
+        'feature_3_title',
+        'feature_3_subtitle',
+        'feature_4_title',
+        'feature_4_subtitle',
         'show_recommended_events',
         'recommended_events_title',
         'recommended_events_subtitle',
@@ -31,6 +45,7 @@ class HomepageSetting extends Model
     ];
 
     protected $casts = [
+        'show_features' => 'boolean',
         'show_recommended_events' => 'boolean',
         'show_nearest_events' => 'boolean',
         'show_upcoming_events' => 'boolean',
