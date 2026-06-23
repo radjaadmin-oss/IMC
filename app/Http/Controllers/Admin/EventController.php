@@ -190,6 +190,7 @@ class EventController extends Controller
 
         $validated = $request->validate([
             'title'                  => 'required|string|max:255',
+            'category_id'            => 'required|exists:event_categories,id',
             'location'               => 'required|string|max:255',
             'date'                   => 'required|date',
             'time'                   => 'nullable|string|max:50',
@@ -225,6 +226,13 @@ class EventController extends Controller
                 $validated['price'] = 0;
                 $validated['quota'] = 0;
             }
+
+            // Set default values
+            $validated['organizer_id'] = auth()->id(); // Admin yang create
+            $validated['status'] = 'approved'; // Langsung approved jika dibuat oleh admin
+            $validated['sold_count'] = 0;
+            $validated['views'] = 0;
+            $validated['is_featured'] = false;
 
             $event = Event::create($validated);
 
@@ -279,6 +287,7 @@ class EventController extends Controller
 
         $validated = $request->validate([
             'title'                  => 'required|string|max:255',
+            'category_id'            => 'required|exists:event_categories,id',
             'location'               => 'required|string|max:255',
             'date'                   => 'required|date',
             'time'                   => 'nullable|string|max:50',
