@@ -21,6 +21,16 @@ export default {
                 'gold': '#F5C518',
                 'gold-dark': '#D4A017',
             },
+            // · ADDED: Marquee Animation for Event Organizer Name
+            keyframes: {
+                marquee: {
+                    '0%': { transform: 'translateX(0%)' },
+                    '100%': { transform: 'translateX(-100%)' },
+                }
+            },
+            animation: {
+                marquee: 'marquee 10s linear infinite',
+            }
         },
     },
 

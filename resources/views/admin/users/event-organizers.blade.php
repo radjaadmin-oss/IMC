@@ -126,15 +126,101 @@
                 <tbody class="divide-y divide-[#242424]">
                     @forelse($eventOrganizers as $eo)
                     <tr class="hover:bg-[#0A0A0A] transition-all duration-300">
+                                                <td class="px-6 py-4">
+    <div class="flex items-center gap-3">
+        {{-- Avatar Photo --}}
+        @if($eo->avatar)
+            <img 
+                src="{{ Storage::url($eo->avatar) }}" 
+                alt="{{ $eo->name }}"
+                class="w-12 h-12 rounded-full object-cover border-2 border-[#F5C518]/20 flex-shrink-0"
+            >
+        @else
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#F5C518] to-[#D4A017] flex items-center justify-center text-[#050B14] font-bold text-lg flex-shrink-0">
+                {{ substr($eo->name, 0, 1) }}
+            </div>
+        @endif
+        
+        {{-- Name & Email --}}
+        <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold text-white truncate">{{ $eo->name }}</div>
+            <div class="text-xs text-slate-400 truncate">{{ $eo->email }}</div>
+        </div>
+        
+        {{-- Edit Button (Camera Icon) --}}
+        <a href="{{ route('admin.users.event-organizers.edit', $eo) }}" 
+           class="p-2 bg-[#F5C518]/10 text-[#F5C518] rounded-lg hover:bg-[#F5C518]/20 transition-all duration-300 group flex-shrink-0" 
+           title="Edit & Upload Photo">
+            <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+        </a>
+    </div>
+</td>
+
+                                 <td class="px-6 py-4 text-[#94A3B8]">{{ $eo->company_name ?? '-' }}</td>
                         <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-gradient-to-br from-[#B22222] to-[#FFD700] rounded-full flex items-center justify-center text-white font-bold">
-                                    {{ strtoupper(substr($eo->name, 0, 1)) }}
-                                </div>
-                                <div>
-                                    <div class="text-white font-semibold">{{ $eo->name }}</div>
-                                    <div class="text-xs text-[#94A3B8]">{{ $eo->email }}</div>
-                                </div>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                </svg>
+                                <span class="text-white font-semibold">{{ $eo->events_count }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-white font-semibold">Rp {{ number_format($eo->total_revenue ?? 0, 0, ',', '.') }}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($eo->status === 'active')
+                            <span class="px-3 py-1 bg-[#22C55E]/10 text-[#22C55E] rounded-full text-xs font-semibold">Active</span>
+                            @elseif($eo->status === 'pending')
+                            <span class="px-3 py-1 bg-[#F59E0B]/10 text-[#F59E0B] rounded-full text-xs font-semibold">Pending</span>
+                            @elseif($eo->status === 'suspended')
+                            <span class="px-3 py-1 bg-[#EF4444]/10 text-[#EF4444] rounded-full text-xs font-semibold">Suspended</span>
+                            @else
+                            <span class="px-3 py-1 bg-[#64748B]/10 text-[#64748B] rounded-full text-xs font-semibold">Rejected</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                {{-- Status Action Buttons --}}
+                                @if($eo->status === 'pending')
+                                <form action="{{ route('admin.users.event-organizers.approve', $eo) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-3 py-1.5 bg-[#22C55E]/10 text-[#22C55E] rounded-lg hover:bg-[#22C55E]/20 transition-all duration-300 text-sm font-semibold" title="Approve">
+                                        Approve
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.users.event-organizers.reject', $eo) }}" method="POST" onsubmit="return confirm('Yakin ingin reject EO ini?')">
+                                    @csrf
+                                    <button type="submit" class="px-3 py-1.5 bg-[#EF4444]/10 text-[#EF4444] rounded-lg hover:bg-[#EF4444]/20 transition-all duration-300 text-sm font-semibold" title="Reject">
+                                        Reject
+                                    </button>
+                                </form>
+                                @elseif($eo->status === 'active')
+                                <form action="{{ route('admin.users.event-organizers.suspend', $eo) }}" method="POST" onsubmit="return confirm('Yakin ingin suspend EO ini?')">
+                                    @csrf
+                                    <button type="submit" class="px-3 py-1.5 bg-[#F59E0B]/10 text-[#F59E0B] rounded-lg hover:bg-[#F59E0B]/20 transition-all duration-300 text-sm font-semibold" title="Suspend">
+                                        Suspend
+                                    </button>
+                                </form>
+                                @elseif($eo->status === 'suspended')
+                                <form action="{{ route('admin.users.event-organizers.approve', $eo) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-3 py-1.5 bg-[#22C55E]/10 text-[#22C55E] rounded-lg hover:bg-[#22C55E]/20 transition-all duration-300 text-sm font-semibold" title="Activate">
+                                        Activate
+                                    </button>
+                                </form>
+                                @endif
+
+                                {{-- Detail Button --}}
+                                <button onclick="openDetailModal({{ json_encode($eo) }})" class="p-2 bg-[#3B82F6]/10 text-[#3B82F6] rounded-lg hover:bg-[#3B82F6]/20 transition-all duration-300" title="Detail">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </button>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-[#94A3B8]">{{ $eo->company_name ?? '-' }}</td>

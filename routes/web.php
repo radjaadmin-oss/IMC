@@ -76,6 +76,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     
     // Event Organizers
     Route::get('users/event-organizers', [UserController::class, 'eventOrganizers'])->name('users.event-organizers');
+    Route::get('users/event-organizers/{user}/edit', [UserController::class, 'editEO'])->name('users.event-organizers.edit');
+    Route::put('users/event-organizers/{user}', [UserController::class, 'updateEO'])->name('users.event-organizers.update');
     Route::post('users/event-organizers/{user}/approve', [UserController::class, 'approveEO'])->name('users.event-organizers.approve');
     Route::post('users/event-organizers/{user}/suspend', [UserController::class, 'suspendEO'])->name('users.event-organizers.suspend');
     Route::post('users/event-organizers/{user}/reject', [UserController::class, 'rejectEO'])->name('users.event-organizers.reject');
@@ -98,6 +100,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('homepage-settings', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'index'])->name('homepage-settings.index');
     Route::put('homepage-settings', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'update'])->name('homepage-settings.update');
     
+    // ✓ Pages Management (CMS Static Pages)
+    Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
+    
     // ═══════════════════════════════════════════════════════════════
     // EVENT MANAGEMENT
     // ═══════════════════════════════════════════════════════════════
@@ -113,10 +118,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Event Featured
     Route::post('events/{event}/toggle-featured', [\App\Http\Controllers\Admin\EventController::class, 'toggleFeatured'])->name('events.toggle-featured');
     
-     // Event Duplicate
+    // Event Duplicate
     Route::post('events/{event}/duplicate', [\App\Http\Controllers\Admin\EventController::class, 'duplicate'])->name('events.duplicate');
     
-        // Event Featured Page
+    // Event Featured Page
     Route::get('events-featured', [\App\Http\Controllers\Admin\EventController::class, 'featured'])->name('events.featured');
     
     // Event Categories
@@ -128,10 +133,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     
     // ═══════════════════════════════════════════════════════════════
     // TRANSACTION MANAGEMENT
-
     // ═══════════════════════════════════════════════════════════════
     
     // Orders Management
     Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show', 'destroy']);
     Route::patch('orders/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
 });
+
+// ═══════════════════════════════════════════════════════════════
+// PUBLIC PAGES (Static Pages CMS)
+// ═══════════════════════════════════════════════════════════════
+// ⚠️ MUST BE AT THE BOTTOM to avoid route conflicts
+Route::get('/page/{slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');

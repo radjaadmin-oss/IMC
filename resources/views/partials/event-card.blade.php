@@ -1,11 +1,12 @@
 {{-- ═══════════════════════════════════════════════════════════════════════════
     EVENT CARD COMPONENT - LOKET.COM INSPIRED LAYOUT (DARK THEME)
     Hybrid: Loket.com clean layout + RADJATIKET dark navy + gold premium
+    WITH EVENT ORGANIZER INFO (Avatar + Company Name)
 ═══════════════════════════════════════════════════════════════════════════ --}}
 
 <a href="{{ route('events.show', $event) }}"
    class="group block bg-[#0B1220] rounded-xl overflow-hidden border border-white/5 hover:border-[#F5C518]/30 transition-all duration-300 hover:shadow-lg hover:shadow-black/50">
-    
+
     {{-- Event Image --}}
     <div class="relative aspect-[16/9] overflow-hidden bg-[#050B14]">
         @if($event->image)
@@ -48,7 +49,7 @@
 
     {{-- Event Info - Loket.com Style Layout --}}
     <div class="p-3">
-        
+
         {{-- Title --}}
         <h3 class="text-white font-bold text-sm leading-snug line-clamp-2 mb-2 group-hover:text-[#F5C518] transition-colors min-h-[2.5rem]">
             {{ $event->title }}
@@ -76,15 +77,15 @@
         </div>
 
         {{-- Price (Loket style) --}}
-        <div class="mb-2.5">
-            @if($event->is_free)
-                <p class="text-green-400 font-bold text-sm">GRATIS</p>
-            @else
-                <p class="text-[#F5C518] font-bold text-sm">
-                    Rp{{ number_format($event->lowest_price, 0, ',', '.') }}
-                </p>
-            @endif
-        </div>
+<div class="mb-2.5">
+    @if($event->is_free || $event->lowest_price == 0)
+        <p class="text-green-400 font-bold text-sm">GRATIS</p>
+    @else
+        <p class="text-[#F5C518] font-bold text-sm">
+            Rp{{ number_format($event->lowest_price, 0, ',', '.') }}
+        </p>
+    @endif
+</div>
 
         {{-- Organizer/Category Info (Loket style - at bottom) --}}
         <div class="flex items-center justify-between pt-2 border-t border-white/5">
@@ -115,6 +116,43 @@
                 </div>
             @endif
         </div>
+
+        {{-- ═══════════════════════════════════════════════════════════════════════
+            PRESENTED BY SECTION - Event Organizer Info
+            - Avatar EO (with fallback to initial circle)
+            - Company Name with scrolling text (pause on hover)
+        ═══════════════════════════════════════════════════════════════════════ --}}
+        @if($event->organizer)
+            <div class="pt-2.5 mt-2.5 border-t border-white/5">
+                <div class="flex items-center gap-2">
+                    {{-- EO Avatar --}}
+                    <div class="flex-shrink-0">
+                        @if($event->organizer->avatar)
+                            <img src="{{ asset('storage/' . $event->organizer->avatar) }}"
+                                 alt="{{ $event->organizer->name }}"
+                                 class="w-10 h-10 rounded-full object-cover border-2 border-[#F5C518]/20">
+                        @else
+                            {{-- Fallback: Initial Circle (Gold) --}}
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#F5C518] to-[#d4a617] flex items-center justify-center border-2 border-[#F5C518]/20">
+                                <span class="text-black font-bold text-sm">
+                                    {{ strtoupper(substr($event->organizer->name, 0, 1)) }}
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- EO Company Name with Scrolling Text --}}
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] text-slate-500 mb-0.5">Presented by</p>
+                        <div class="overflow-hidden">
+                            <p class="text-xs text-slate-300 font-medium truncate group-hover:animate-marquee">
+                                {{ $event->organizer->name }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
 
     </div>
 

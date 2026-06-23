@@ -15,7 +15,7 @@
     {{-- ═══════════════════════════════════════════════════════════════
         FILTER & SEARCH (Optional - Coming Soon)
     ═══════════════════════════════════════════════════════════════ --}}
-    {{-- 
+    {{--
     <div class="mb-8 flex flex-wrap gap-4">
         <input type="search" placeholder="Cari event..." class="...">
         <select class="...">Kategori</select>
@@ -91,12 +91,12 @@
                             {{ Str::limit($event->location, 25) }}
                         </p>
 
-                        <div class="flex items-center justify-between">
-                            @if($event->price == 0)
+                                                <div class="flex items-center justify-between mb-3">
+                            @if($event->is_free || $event->lowest_price == 0)
                                 <span class="text-green-400 font-bold">GRATIS</span>
                             @else
                                 <span class="text-[#F5C518] font-bold">
-                                    Rp {{ number_format($event->price, 0, ',', '.') }}
+                                    Rp {{ number_format($event->lowest_price, 0, ',', '.') }}
                                 </span>
                             @endif
 
@@ -104,6 +104,40 @@
                                 {{ $event->remaining_quota }} tiket tersisa
                             </span>
                         </div>
+
+
+                        {{-- ═══════════════════════════════════════════════════════════
+                            PRESENTED BY SECTION - Event Organizer Info
+                        ═══════════════════════════════════════════════════════════ --}}
+                        @if($event->organizer)
+                            <div class="pt-3 mt-3 border-t border-white/5">
+                                <div class="flex items-center gap-2">
+                                    {{-- EO Avatar --}}
+                                    <div class="flex-shrink-0">
+                                        @if($event->organizer->avatar)
+                                            <img src="{{ asset('storage/' . $event->organizer->avatar) }}"
+                                                 alt="{{ $event->organizer->name }}"
+                                                 class="w-8 h-8 rounded-full object-cover border-2 border-[#F5C518]/20">
+                                        @else
+                                            {{-- Fallback: Initial Circle (Gold) --}}
+                                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#F5C518] to-[#d4a617] flex items-center justify-center border-2 border-[#F5C518]/20">
+                                                <span class="text-black font-bold text-xs">
+                                                    {{ strtoupper(substr($event->organizer->name, 0, 1)) }}
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    {{-- EO Company Name --}}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-[9px] text-slate-500 mb-0.5">Presented by</p>
+                                        <p class="text-[11px] text-slate-300 font-medium truncate">
+                                            {{ $event->organizer->name }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </a>
             @endforeach

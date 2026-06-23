@@ -163,7 +163,7 @@ class UserController extends Controller
         return back()->with('success', 'Event Organizer berhasil disuspend!');
     }
 
-    /**
+     /**
      * Reject Event Organizer
      */
     public function rejectEO(User $user)
@@ -173,9 +173,55 @@ class UserController extends Controller
         return back()->with('success', 'Event Organizer berhasil direject!');
     }
 
+    /**
+     * Show edit form for Event Organizer
+     */
+    public function editEO(User $user)
+    {
+        // Make sure user is event organizer
+        if ($user->role !== 'event_organizer') {
+            abort(404);
+        }
+
+        return view('admin.users.event-organizer-edit', compact('user'));
+    }
+
+    /**
+     * Update Event Organizer (including avatar upload)
+     */
+    public function updateEO(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'company_name' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'avatar' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'status' => 'required|in:active,pending,suspended,rejected',
+        ]);
+
+        // Handle Avatar Upload
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if exists
+            if ($user->avatar && \Storage::disk('public')->exists($user->avatar)) {
+                \Storage::disk('public')->delete($user->avatar);
+            }
+
+            // Store new avatar in storage/app/public/avatars/
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $avatarPath;
+        }
+
+        // Update user
+        $user->update($validated);
+
+        return redirect()->route('admin.users.event-organizers')
+            ->with('success', '✓ Event Organizer berhasil diupdate!');
+    }
+
     // ═══════════════════════════════════════════════════════════════
     // CUSTOMER MANAGEMENT
-    // ═══════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════════════════════════════════════
     
     /**
      * Display list of customers
