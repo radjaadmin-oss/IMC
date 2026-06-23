@@ -12,7 +12,7 @@ Tiket Anda sudah aktif dan siap digunakan untuk menghadiri event.
 <x-mail::panel>
 **Kode Pesanan:** {{ $order->order_code }}  
 **Status Pembayaran:** ✅ **PAID**  
-**Tanggal Pembayaran:** {{ $paidAt->format('d M Y, H:i') }} WIB  
+**Tanggal Pembayaran:** {{ $order->paid_at ? $order->paid_at->format('d M Y, H:i') : now()->format('d M Y, H:i') }} WIB  
 **Total Dibayar:** **Rp {{ number_format($order->total_price, 0, ',', '.') }}**
 </x-mail::panel>
 
