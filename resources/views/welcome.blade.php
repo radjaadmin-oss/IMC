@@ -147,7 +147,7 @@
         
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-white">{{ $settings->recommended_events_title ?? 'Rekomendasi Event' }}</h2>
+                <h2 class="text-2xl font-bold text-white">{{ $settings->recommended_events_title ?? 'Rekomendasi Event' }}</h2>
                 @if($settings->recommended_events_subtitle)
                     <p class="text-gray-400 mt-1">{{ $settings->recommended_events_subtitle }}</p>
                 @endif
@@ -173,7 +173,7 @@
     <div class="max-w-[1280px] mx-auto px-6">
         
         <div class="text-center mb-6">
-            <h2 class="text-3xl font-bold text-white">{{ $settings->categories_title ?? 'Kategori Event' }}</h2>
+            <h2 class="text-2xl font-bold text-white">{{ $settings->categories_title ?? 'Kategori Event' }}</h2>
             @if($settings->categories_subtitle)
                 <p class="text-gray-400 mt-2">{{ $settings->categories_subtitle }}</p>
             @endif
@@ -245,7 +245,7 @@
         
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-white">{{ $settings->nearest_events_title ?? 'Event Terdekat' }}</h2>
+                <h2 class="text-2xl font-bold text-white">{{ $settings->nearest_events_title ?? 'Event Terdekat' }}</h2>
                 @if($settings->nearest_events_subtitle)
                     <p class="text-gray-400 mt-1">{{ $settings->nearest_events_subtitle }}</p>
                 @endif
@@ -272,7 +272,7 @@
         
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-white">{{ $settings->upcoming_events_title ?? 'Upcoming Event' }}</h2>
+                <h2 class="text-2xl font-bold text-white">{{ $settings->upcoming_events_title ?? 'Upcoming Event' }}</h2>
                 @if($settings->upcoming_events_subtitle)
                     <p class="text-gray-400 mt-1">{{ $settings->upcoming_events_subtitle }}</p>
                 @endif
@@ -300,7 +300,7 @@
         
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-white">{{ $settings->popular_events_title ?? 'Popular Event' }}</h2>
+                <h2 class="text-2xl font-bold text-white">{{ $settings->popular_events_title ?? 'Popular Event' }}</h2>
                 @if($settings->popular_events_subtitle)
                     <p class="text-gray-400 mt-1">{{ $settings->popular_events_subtitle }}</p>
                 @endif
@@ -327,7 +327,7 @@
         
         <div class="bg-[#0B1220] rounded-[28px] p-10 border border-white/5">
             
-            <h2 class="text-3xl font-bold text-white mb-2 text-center">{{ $settings->regions_title ?? 'Temukan Event Menarik di Kotamu' }}</h2>
+            <h2 class="text-2xl font-bold text-white mb-2 text-center">{{ $settings->regions_title ?? 'Temukan Event Menarik di Kotamu' }}</h2>
             <p class="text-gray-400 text-center mb-8 max-w-2xl mx-auto">
                 {{ $settings->regions_subtitle ?? 'Jelajahi berbagai event seru di kota-kota besar Indonesia. Pilih kotamu dan temukan pengalaman tak terlupakan!' }}
             </p>
