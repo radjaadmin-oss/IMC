@@ -10,8 +10,9 @@
     <p class="text-gray-400 mt-1">Ubah detail event</p>
 </div>
 
-<div class="max-w-4xl">
+<div class="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
     
+    {{-- LEFT: Form --}}
     <div class="bg-[#0B1220] rounded-2xl border border-white/10 p-8">
         
         <form action="{{ route('admin.events.update', $event) }}" method="POST" enctype="multipart/form-data" id="eventForm">
@@ -434,6 +435,103 @@
         
     </div>
     
+    {{-- RIGHT: Live Preview --}}
+    <div class="lg:sticky lg:top-20 h-fit">
+        <div class="bg-[#0B1220] rounded-2xl border border-white/10 p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <svg class="w-5 h-5 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                <h3 class="text-white font-bold">Preview Event Card</h3>
+            </div>
+            
+            {{-- Preview Card --}}
+            <div class="bg-[#050B14] rounded-2xl border border-white/10 overflow-hidden">
+                {{-- Image Preview --}}
+                <div class="relative aspect-[2/1] bg-gradient-to-br from-gray-900 via-gray-800 to-black overflow-hidden">
+                    @if($event->image)
+                    <img id="preview-card-image" 
+                         src="{{ asset('storage/' . $event->image) }}" 
+                         alt="Preview" 
+                         class="w-full h-full object-cover">
+                    @else
+                    <img id="preview-card-image" 
+                         src="" 
+                         alt="Preview" 
+                         class="w-full h-full object-cover hidden">
+                    <div id="preview-card-placeholder" class="absolute inset-0 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    @endif
+                    
+                    {{-- Category Badge --}}
+                    <div class="absolute top-3 left-3">
+                        <span id="preview-category" class="inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-wider bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37]">
+                            {{ $event->category->name ?? 'Kategori' }}
+                        </span>
+                    </div>
+                </div>
+                
+                {{-- Card Content --}}
+                <div class="p-4 space-y-3">
+                    {{-- Title --}}
+                    <h3 id="preview-title" class="text-white font-bold text-base line-clamp-1">
+                        {{ $event->title }}
+                    </h3>
+                    
+                    {{-- Location & Date --}}
+                    <div class="space-y-2 text-xs">
+                        <div class="flex items-center gap-2 text-gray-400">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span id="preview-location" class="line-clamp-1">{{ $event->location }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-400">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span id="preview-date">{{ $event->date->format('d M Y') }}</span>
+                        </div>
+                    </div>
+                    
+                    {{-- Price --}}
+                    <div class="flex items-center justify-between pt-2 border-t border-white/10">
+                        <div>
+                            <p class="text-[10px] text-gray-500 mb-0.5">Harga</p>
+                            <p id="preview-price" class="text-[#D4AF37] font-bold text-sm">
+                                @if($event->has_ticket_categories && $event->ticketCategories->isNotEmpty())
+                                    Mulai dari Rp {{ number_format($event->ticketCategories->min('price'), 0, ',', '.') }}
+                                @else
+                                    Rp {{ number_format($event->price, 0, ',', '.') }}
+                                @endif
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-gray-500 mb-0.5">Tersisa</p>
+                            <p id="preview-quota" class="text-white font-semibold text-sm">
+                                {{ $event->quota - $event->sold_count }} tiket
+                            </p>
+                        </div>
+                    </div>
+                    
+                    {{-- Button --}}
+                    <button type="button" class="w-full py-2.5 rounded-xl text-xs font-bold tracking-wider bg-gradient-to-r from-[#D4AF37] to-[#F4C542] text-black hover:opacity-90 transition-opacity">
+                        BELI TIKET
+                    </button>
+                </div>
+            </div>
+            
+            <p class="text-xs text-gray-500 mt-4 text-center">
+                Preview akan update otomatis saat Anda mengubah data
+            </p>
+        </div>
+    </div>
+    
 </div>
 
 @endsection
@@ -596,22 +694,129 @@ function previewEventImage(event) {
     const file = event.target.files[0];
     const previewImg = document.getElementById('preview-image');
     const previewPlaceholder = document.getElementById('preview-placeholder');
+    const previewCardImg = document.getElementById('preview-card-image');
+    const previewCardPlaceholder = document.getElementById('preview-card-placeholder');
 
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
+            // Update form preview
             if (previewImg) {
                 previewImg.src = e.target.result;
                 previewImg.classList.remove('hidden');
                 
-                // Hide placeholder if exists
                 if (previewPlaceholder) {
                     previewPlaceholder.classList.add('hidden');
+                }
+            }
+            
+            // Update card preview
+            if (previewCardImg) {
+                previewCardImg.src = e.target.result;
+                previewCardImg.classList.remove('hidden');
+                
+                if (previewCardPlaceholder) {
+                    previewCardPlaceholder.classList.add('hidden');
                 }
             }
         }
         reader.readAsDataURL(file);
     }
 }
+
+// Live Preview Updates
+document.addEventListener('DOMContentLoaded', function() {
+    // Title
+    const titleInput = document.querySelector('input[name="title"]');
+    if (titleInput) {
+        titleInput.addEventListener('input', function() {
+            document.getElementById('preview-title').textContent = this.value || 'Nama Event';
+        });
+    }
+    
+    // Location
+    const locationInput = document.querySelector('input[name="location"]');
+    if (locationInput) {
+        locationInput.addEventListener('input', function() {
+            document.getElementById('preview-location').textContent = this.value || 'Lokasi';
+        });
+    }
+    
+    // Date
+    const dateInput = document.querySelector('input[name="date"]');
+    if (dateInput) {
+        dateInput.addEventListener('change', function() {
+            if (this.value) {
+                const date = new Date(this.value);
+                const formatted = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                document.getElementById('preview-date').textContent = formatted;
+            }
+        });
+    }
+    
+    // Category
+    const categorySelect = document.querySelector('select[name="category_id"]');
+    if (categorySelect) {
+        categorySelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            document.getElementById('preview-category').textContent = selectedOption.text || 'Kategori';
+        });
+    }
+    
+    // Price (single price mode)
+    const priceInput = document.querySelector('input[name="price"]');
+    if (priceInput) {
+        priceInput.addEventListener('input', function() {
+            const price = parseInt(this.value) || 0;
+            const formatted = price.toLocaleString('id-ID');
+            document.getElementById('preview-price').textContent = 'Rp ' + formatted;
+        });
+    }
+    
+    // Quota (single quota mode)
+    const quotaInput = document.querySelector('input[name="quota"]');
+    if (quotaInput) {
+        quotaInput.addEventListener('input', function() {
+            const quota = parseInt(this.value) || 0;
+            document.getElementById('preview-quota').textContent = quota + ' tiket';
+        });
+    }
+    
+    // Toggle Categories - update preview when switching modes
+    const toggleCategoriesCheckbox = document.getElementById('toggleCategories');
+    if (toggleCategoriesCheckbox) {
+        toggleCategoriesCheckbox.addEventListener('change', function() {
+            updatePricePreview();
+        });
+    }
+    
+    // Function to update price preview from categories
+    function updatePricePreview() {
+        const categoriesContainer = document.getElementById('categoriesContainer');
+        if (!categoriesContainer) return;
+        
+        const priceInputs = categoriesContainer.querySelectorAll('input[name*="[price]"]');
+        const prices = Array.from(priceInputs).map(input => parseInt(input.value) || 0).filter(p => p > 0);
+        
+        if (prices.length > 0) {
+            const minPrice = Math.min(...prices);
+            const formatted = minPrice.toLocaleString('id-ID');
+            document.getElementById('preview-price').textContent = 'Mulai dari Rp ' + formatted;
+            
+            // Update quota from categories
+            const quotaInputs = categoriesContainer.querySelectorAll('input[name*="[quota]"]');
+            const totalQuota = Array.from(quotaInputs).reduce((sum, input) => sum + (parseInt(input.value) || 0), 0);
+            document.getElementById('preview-quota').textContent = totalQuota + ' tiket';
+        }
+    }
+    
+    // Listen to category price/quota changes
+    document.addEventListener('input', function(e) {
+        if (e.target.matches('input[name*="categories"][name*="[price]"]') || 
+            e.target.matches('input[name*="categories"][name*="[quota]"]')) {
+            updatePricePreview();
+        }
+    });
+});
 </script>
 @endpush
