@@ -8,62 +8,147 @@
 
 @section('content')
 
-{{-- START TWO-COLUMN HERO SECTION --}}
-<section class="bg-gradient-to-b from-gray-50 to-white py-16">
-    <div class="max-w-[1280px] mx-auto px-6">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
+{{-- START HERO BANNER SLIDER --}}
+<section class="bg-white py-8" 
+         x-data="heroSlider()" 
+         @keydown.arrow-left="prev(); stopAutoplay(); startAutoplay();"
+         @keydown.arrow-right="next(); stopAutoplay(); startAutoplay();"
+         aria-label="Banner promosi">
+    <div class="max-w-7xl mx-auto px-6">
+        
+        {{-- Banner Container --}}
+        <div class="relative rounded-3xl overflow-hidden shadow-lg bg-gray-100">
             
-            {{-- LEFT COLUMN: Title + Search --}}
-            <div>
-                <h1 class="text-4xl lg:text-5xl xl:text-6xl font-black text-gray-900 leading-tight mb-6">
-                    Temukan Event<br>
-                    <span class="text-primary-600">Terbaik di Indonesia</span>
-                </h1>
-                <p class="text-lg text-gray-600 mb-8">
-                    Konser, festival, seminar, workshop, dan berbagai event menarik lainnya menanti Anda!
-                </p>
+            {{-- Banner Slides --}}
+            <div class="relative w-full h-[220px] md:h-[400px] lg:h-[600px]"
+                 @touchstart="touchStart($event)"
+                 @touchend="touchEnd($event)">
                 
-                {{-- Search Box --}}
-                <div class="relative">
-                    <input type="text" 
-                           placeholder="Cari event yang kamu inginkan..." 
-                           class="w-full px-6 py-4 pl-14 bg-white border-2 border-gray-200 rounded-2xl text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:border-primary-600 shadow-lg transition-all">
-                    <svg class="w-6 h-6 text-gray-400 absolute left-5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <button class="absolute right-2 top-1/2 -translate-y-1/2 px-8 py-2.5 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-all shadow-lg">
-                        Cari
-                    </button>
-                </div>
+                @forelse($banners as $index => $banner)
+                    {{-- Individual Slide --}}
+                    <div x-show="currentSlide === {{ $index }}"
+                         x-transition:enter="transition ease-in-out duration-500"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in-out duration-500"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="absolute inset-0">
+                        
+                        @if($banner->event_id && $banner->event)
+                            {{-- Clickable Banner (linked to event) --}}
+                            <a href="{{ route('events.show', $banner->event) }}" 
+                               class="block w-full h-full cursor-pointer hover:opacity-95 transition-opacity">
+                                <picture>
+                                    @if($banner->mobile_image)
+                                        <source media="(max-width: 767px)" 
+                                                srcset="{{ asset('storage/' . $banner->mobile_image) }}">
+                                    @endif
+                                    
+                                    <img src="{{ asset('storage/' . $banner->desktop_image) }}" 
+                                         alt="{{ $banner->title }}"
+                                         class="w-full h-full object-cover"
+                                         loading="{{ $index === 0 ? 'eager' : 'lazy' }}">
+                                </picture>
+                            </a>
+                        @else
+                            {{-- Display-only Banner (no event link) --}}
+                            <picture>
+                                @if($banner->mobile_image)
+                                    <source media="(max-width: 767px)" 
+                                            srcset="{{ asset('storage/' . $banner->mobile_image) }}">
+                                @endif
+                                
+                                <img src="{{ asset('storage/' . $banner->desktop_image) }}" 
+                                     alt="{{ $banner->title }}"
+                                     class="w-full h-full object-cover"
+                                     loading="{{ $index === 0 ? 'eager' : 'lazy' }}">
+                            </picture>
+                        @endif
+                        
+                    </div>
+                @empty
+                    {{-- Empty State --}}
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                        <div class="text-center px-6">
+                            <svg class="w-16 h-16 md:w-20 md:h-20 text-gray-400 mx-auto mb-4" 
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <h3 class="text-lg md:text-xl font-bold text-gray-700 mb-2">Belum Ada Banner Promo</h3>
+                            <p class="text-sm text-gray-500 mb-4">Banner promosi akan ditampilkan di sini</p>
+                            
+                            @auth
+                                @if(auth()->user()->role === 'admin')
+                                    <a href="{{ route('admin.banners.index') }}" 
+                                       class="inline-block px-6 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition-colors">
+                                        Kelola Banner
+                                    </a>
+                                @endif
+                            @endauth
+                        </div>
+                    </div>
+                @endforelse
+                
             </div>
             
-            {{-- RIGHT COLUMN: Promo Card --}}
-            <div class="relative">
-                <div class="bg-gradient-to-br from-black to-gray-900 rounded-3xl p-8 border-2 border-primary-600 shadow-2xl overflow-hidden">
-                    {{-- Decorative Background --}}
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="inline-block px-4 py-1.5 bg-primary-600 rounded-full text-white text-xs font-bold mb-4">
-                            🔥 PROMO TERBATAS
-                        </div>
-                        <h3 class="text-3xl font-black text-white mb-3">
-                            Diskon hingga <span class="text-primary-500">50%</span>
-                        </h3>
-                        <p class="text-gray-300 mb-6">
-                            Dapatkan diskon spesial untuk berbagai event pilihan! Buruan sebelum kehabisan.
-                        </p>
-                        <button class="px-8 py-3 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-all shadow-xl hover:shadow-primary-600/50 hover:scale-105 transform">
-                            Lihat Promo
+            @if($banners->count() > 1)
+                {{-- Previous Button --}}
+                <button @click="prev(); stopAutoplay(); startAutoplay();"
+                        aria-label="Banner sebelumnya"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 z-10 
+                               w-10 h-10 md:w-12 md:h-12 
+                               rounded-full 
+                               bg-black/40 backdrop-blur-sm
+                               text-white
+                               hover:bg-black/60 
+                               transition-all duration-300
+                               flex items-center justify-center
+                               focus:outline-none focus:ring-2 focus:ring-white/50
+                               group">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+
+                {{-- Next Button --}}
+                <button @click="next(); stopAutoplay(); startAutoplay();"
+                        aria-label="Banner berikutnya"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 z-10 
+                               w-10 h-10 md:w-12 md:h-12 
+                               rounded-full 
+                               bg-black/40 backdrop-blur-sm
+                               text-white
+                               hover:bg-black/60 
+                               transition-all duration-300
+                               flex items-center justify-center
+                               focus:outline-none focus:ring-2 focus:ring-white/50
+                               group">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+
+                {{-- Dot Indicators --}}
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
+                    @foreach($banners as $dotIndex => $banner)
+                        <button @click="goToSlide({{ $dotIndex }})"
+                                :class="currentSlide === {{ $dotIndex }} ? 'bg-white w-8' : 'bg-white/40 w-2'"
+                                aria-label="Ke banner {{ $dotIndex + 1 }}"
+                                class="h-2 rounded-full transition-all duration-300 hover:bg-white/80 focus:outline-none focus:ring-1 focus:ring-white">
                         </button>
-                    </div>
+                    @endforeach
                 </div>
-            </div>
+            @endif
             
         </div>
+        
     </div>
 </section>
-{{-- END TWO-COLUMN HERO SECTION --}}
+{{-- END HERO BANNER SLIDER --}}
 
 {{-- START BENEFIT SECTION --}}
 <section class="py-16 bg-white">
@@ -651,5 +736,82 @@ html, body {
     box-sizing: border-box;
 }
 </style>
+
+<script>
+/**
+ * Hero Banner Slider - AlpineJS Component
+ * Auto-slides every 5 seconds with manual controls
+ */
+function heroSlider() {
+    return {
+        currentSlide: 0,
+        totalSlides: {{ $banners->count() }},
+        autoplayInterval: null,
+        touchStartX: 0,
+        touchEndX: 0,
+        
+        init() {
+            this.startAutoplay();
+        },
+        
+        startAutoplay() {
+            // Don't start autoplay if 0 or 1 slides
+            if (this.totalSlides <= 1) return;
+            
+            this.autoplayInterval = setInterval(() => {
+                this.next();
+            }, 5000); // 5 seconds
+        },
+        
+        stopAutoplay() {
+            if (this.autoplayInterval) {
+                clearInterval(this.autoplayInterval);
+            }
+        },
+        
+        next() {
+            if (this.totalSlides <= 1) return;
+            this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
+        },
+        
+        prev() {
+            if (this.totalSlides <= 1) return;
+            this.currentSlide = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+        },
+        
+        goToSlide(index) {
+            this.currentSlide = index;
+            this.stopAutoplay();
+            this.startAutoplay(); // Restart autoplay after manual navigation
+        },
+        
+        touchStart(event) {
+            this.touchStartX = event.touches[0].clientX;
+        },
+        
+        touchEnd(event) {
+            this.touchEndX = event.changedTouches[0].clientX;
+            this.handleSwipe();
+        },
+        
+        handleSwipe() {
+            const diff = this.touchStartX - this.touchEndX;
+            
+            // Minimum swipe distance: 50px
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    this.next();
+                } else {
+                    // Swipe right - previous slide
+                    this.prev();
+                }
+                this.stopAutoplay();
+                this.startAutoplay(); // Restart autoplay after swipe
+            }
+        }
+    }
+}
+</script>
 
 @endpush
