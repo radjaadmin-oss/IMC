@@ -58,6 +58,13 @@
             {{ Str::limit($event->location, 20) }}
         </p>
 
+        {{-- Organizer Badge --}}
+        @if($event->organizer)
+        <div class="mb-3">
+            <x-organizer-badge :organizer="$event->organizer" size="sm" theme="dark" />
+        </div>
+        @endif
+
         <div class="flex items-center justify-between">
             @if($event->price == 0)
                 <span class="text-green-400 font-bold text-sm">GRATIS</span>

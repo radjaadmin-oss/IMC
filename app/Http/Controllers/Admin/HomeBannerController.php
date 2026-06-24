@@ -18,8 +18,8 @@ class HomeBannerController extends Controller
         // Statistics
         $stats = [
             'total' => HomeBanner::count(),
-            'active' => HomeBanner::where('status', 'active')->count(),
-            'inactive' => HomeBanner::where('status', 'inactive')->count(),
+            'active' => HomeBanner::where('is_active', true)->count(),
+            'inactive' => HomeBanner::where('is_active', false)->count(),
             'linked' => HomeBanner::whereNotNull('event_id')->count(),
         ];
 
@@ -33,7 +33,8 @@ class HomeBannerController extends Controller
 
         // Status filter
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $isActive = $request->status === 'active';
+            $query->where('is_active', $isActive);
         }
 
         // Event filter
@@ -55,7 +56,7 @@ class HomeBannerController extends Controller
     public function toggleStatus(HomeBanner $banner)
     {
         $banner->update([
-            'status' => $banner->status === 'active' ? 'inactive' : 'active'
+            'is_active' => !$banner->is_active
         ]);
 
         return redirect()
@@ -85,8 +86,10 @@ class HomeBannerController extends Controller
             'desktop_image' => 'required|image|mimes:jpeg,jpg,png,webp|max:2048',
             'mobile_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'event_id' => 'nullable|exists:events,id',
-            'status' => 'required|in:active,inactive',
+            'is_active' => 'required|boolean',
             'sort_order' => 'required|integer|min:0',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
         // Upload Desktop Image
@@ -138,8 +141,10 @@ class HomeBannerController extends Controller
             'desktop_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'mobile_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'event_id' => 'nullable|exists:events,id',
-            'status' => 'required|in:active,inactive',
+            'is_active' => 'required|boolean',
             'sort_order' => 'required|integer|min:0',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
         ]);
 
         // Update Desktop Image
