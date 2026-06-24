@@ -77,13 +77,14 @@
 </head>
 <body class="antialiased bg-white text-gray-900">
 
-    {{-- NAVBAR - RED TO BLACK GRADIENT --}}
+    {{-- NAVBAR - RED TO BLACK GRADIENT WITH LOGO CONTRAST --}}
     <nav class="sticky top-0 z-[9999] backdrop-blur-xl border-b border-red-900/20 shadow-lg" style="position: sticky !important; top: 0 !important; z-index: 9999 !important; background: linear-gradient(90deg, #B91C1C 0%, #DC2626 40%, #991B1B 70%, #000000 100%);">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center justify-between h-20">
                 
-                {{-- LEFT: Logo (25% width) --}}
-                <div class="w-1/4 flex items-center">
+                {{-- LEFT: Logo with gradient contrast overlay --}}
+                <div class="w-[260px] flex items-center relative" style="background: linear-gradient(90deg, #000000 0%, #111827 50%, transparent 100%);">
+                    <div class="pl-2">
                     <a href="{{ route('home') }}" class="flex items-center group">
                         @php
                             $homepageSetting = \App\Models\HomepageSetting::first();
@@ -106,6 +107,7 @@
                             </div>
                         @endif
                     </a>
+                    </div>
                 </div>
 
                 {{-- CENTER: Navigation (flex-1, centered) --}}
