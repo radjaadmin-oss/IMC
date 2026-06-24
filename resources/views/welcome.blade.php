@@ -9,6 +9,29 @@
 @section('content')
 
 {{-- START HERO BANNER SLIDER --}}
+@if(config('app.debug'))
+    {{-- DEBUG INFO (only in development) --}}
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded mb-4 max-w-7xl mx-auto" role="alert">
+        <p class="font-bold">🔍 Hero Debug Info:</p>
+        <ul class="text-sm mt-2 space-y-1">
+            <li>• Banner Count: <strong>{{ $banners->count() }}</strong></li>
+            @if($banners->count() > 0)
+                @foreach($banners as $debugBanner)
+                    <li>• Banner #{{ $loop->iteration }}: "{{ $debugBanner->title }}" 
+                        - Desktop: <code class="bg-yellow-200 px-1">{{ $debugBanner->desktop_image }}</code>
+                        @if($debugBanner->mobile_image)
+                            - Mobile: <code class="bg-yellow-200 px-1">{{ $debugBanner->mobile_image }}</code>
+                        @endif
+                        - URL: <code class="bg-yellow-200 px-1 text-xs">{{ asset('storage/' . $debugBanner->desktop_image) }}</code>
+                    </li>
+                @endforeach
+            @endif
+            <li>• Storage Link Status: Check if <code class="bg-yellow-200 px-1">public/storage</code> symlink exists</li>
+            <li>• Run: <code class="bg-yellow-200 px-1">php artisan storage:link</code> if images don't display</li>
+        </ul>
+    </div>
+@endif
+
 <section class="bg-white py-8" 
          x-data="heroSlider()" 
          @keydown.arrow-left="prev(); stopAutoplay(); startAutoplay();"
@@ -48,7 +71,8 @@
                                     <img src="{{ asset('storage/' . $banner->desktop_image) }}" 
                                          alt="{{ $banner->title }}"
                                          class="w-full h-full object-cover"
-                                         loading="{{ $index === 0 ? 'eager' : 'lazy' }}">
+                                         loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221920%22 height=%22600%22%3E%3Crect fill=%22%23e5e7eb%22 width=%221920%22 height=%22600%22/%3E%3Ctext fill=%22%23374151%22 font-family=%22Arial%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EImage not found: {{ $banner->desktop_image }}%3C/text%3E%3C/svg%3E'; this.parentElement.parentElement.classList.add('bg-red-50', 'border-2', 'border-red-300');">
                                 </picture>
                             </a>
                         @else
@@ -62,7 +86,8 @@
                                 <img src="{{ asset('storage/' . $banner->desktop_image) }}" 
                                      alt="{{ $banner->title }}"
                                      class="w-full h-full object-cover"
-                                     loading="{{ $index === 0 ? 'eager' : 'lazy' }}">
+                                     loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221920%22 height=%22600%22%3E%3Crect fill=%22%23e5e7eb%22 width=%221920%22 height=%22600%22/%3E%3Ctext fill=%22%23374151%22 font-family=%22Arial%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3EImage not found: {{ $banner->desktop_image }}%3C/text%3E%3C/svg%3E'; this.parentElement.classList.add('bg-red-50', 'border-2', 'border-red-300');">
                             </picture>
                         @endif
                         
