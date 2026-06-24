@@ -77,30 +77,28 @@
 </head>
 <body class="antialiased bg-white text-gray-900">
 
-    {{-- NAVBAR - PREMIUM GRADIENT HEADER (NETFLIX + ARTATIX + TIKET.COM STYLE) --}}
+    {{-- NAVBAR - PREMIUM GRADIENT HEADER (NETFLIX STYLE - SEAMLESS) --}}
     <nav class="sticky top-0 z-50 shadow-lg" style="position: sticky !important; top: 0 !important; z-index: 50 !important; background: linear-gradient(90deg, #7F1D1D 0%, #DC2626 35%, #991B1B 65%, #000000 100%); border-bottom: 1px solid rgba(255,255,255,.05);">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center h-20">
                 
-                {{-- LEFT: Logo Area with Seamless Dark Gradient --}}
-                <div class="w-[300px] flex items-center pl-6" style="background: linear-gradient(90deg, #000000 0%, #111827 40%, rgba(17,24,39,.2) 80%, transparent 100%);">
-                    <a href="{{ route('home') }}" class="flex items-center group">
+                {{-- LEFT: Logo Area (Seamless Dark Fade) --}}
+                <div class="flex items-center" style="width: 280px; background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 50%, transparent 100%); margin-left: -24px; padding-left: 24px;">
+                    <a href="{{ route('home') }}" class="flex items-center group py-4">
                         @php
                             $homepageSetting = \App\Models\HomepageSetting::first();
                             $logo = $homepageSetting?->logo;
                         @endphp
                         
                         @if($logo && file_exists(public_path('storage/' . $logo)))
-                            {{-- Logo dari Database --}}
                             <img 
                                 src="{{ asset('storage/' . $logo) }}" 
                                 alt="Logo" 
-                                class="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                                class="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                             >
                         @else
-                            {{-- Icon Tiket Emas --}}
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <svg class="w-7 h-7 text-black" fill="currentColor" viewBox="0 0 20 20">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/>
                                 </svg>
                             </div>
@@ -109,85 +107,76 @@
                 </div>
 
                 {{-- CENTER: Navigation Menu --}}
-                <div class="hidden lg:flex flex-1 items-center justify-center">
-                    <div class="flex items-center gap-10">
+                <div class="hidden lg:flex flex-1 items-center justify-center px-12">
+                    <div class="flex items-center gap-8">
                         <a href="{{ route('home') }}" 
                            onclick="window.location.href='{{ route('home') }}'; return false;"
-                           class="text-base font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer {{ request()->routeIs('home') ? 'border-b-2 border-white pb-1' : '' }}"
+                           class="text-sm font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer {{ request()->routeIs('home') ? 'border-b-2 border-white pb-0.5' : '' }}"
                            style="pointer-events: auto !important; z-index: 99999 !important; position: relative !important;">
                             Beranda
                         </a>
                         <a href="{{ route('events.index') }}" 
                            onclick="window.location.href='{{ route('events.index') }}'; return false;"
-                           class="text-base font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer {{ request()->routeIs('events.*') ? 'border-b-2 border-white pb-1' : '' }}"
+                           class="text-sm font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer {{ request()->routeIs('events.*') ? 'border-b-2 border-white pb-0.5' : '' }}"
                            style="pointer-events: auto !important; z-index: 99999 !important; position: relative !important;">
                             Event
                         </a>
-                        <a href="#" class="text-base font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer">
+                        <a href="#" class="text-sm font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer">
                             Kategori
                         </a>
-                        <a href="#" class="text-base font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer">
+                        <a href="#" class="text-sm font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer">
                             Promo
                         </a>
-                        <a href="#" class="text-base font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer">
+                        <a href="#" class="text-sm font-semibold text-white hover:text-red-100 transition duration-200 cursor-pointer">
                             Bantuan
                         </a>
                     </div>
                 </div>
 
                 {{-- RIGHT: Search + Auth Buttons --}}
-                <div class="flex items-center gap-5">
+                <div class="flex items-center gap-4 ml-auto">
                     
                     {{-- Search Box - Glass Effect --}}
                     <div class="hidden lg:block relative">
                         <input type="text" 
                                placeholder="Cari event..." 
-                               class="w-[260px] h-12 px-5 pl-12 rounded-full text-sm text-white placeholder-white/70 focus:outline-none transition-all"
-                               style="background: rgba(255,255,255,.08); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.15);">
-                        <svg class="w-5 h-5 text-white absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="w-52 h-10 px-4 pl-10 rounded-full text-xs text-white placeholder-white/60 focus:outline-none transition-all focus:w-60"
+                               style="background: rgba(255,255,255,.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.2);">
+                        <svg class="w-4 h-4 text-white/80 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
 
                     @auth
-                        {{-- Tiket Saya --}}
                         <a href="{{ route('orders.index') }}" 
-                           class="hidden md:flex items-center gap-2 text-base font-semibold text-white hover:text-red-100 transition duration-200">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                           class="hidden md:flex items-center gap-1.5 text-sm font-semibold text-white hover:text-red-100 transition duration-200">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/>
                             </svg>
-                            <span>Tiket Saya</span>
+                            <span class="text-xs">Tiket Saya</span>
                         </a>
 
-                        {{-- User Info --}}
-                        <div class="flex items-center gap-3">
-                            <div class="flex items-center gap-2">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-base">
-                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                                </div>
-                                <span class="hidden md:block text-base text-white font-semibold">{{ auth()->user()->name }}</span>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-xs">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                             </div>
-
-                            {{-- Logout Button --}}
                             <form action="{{ route('logout') }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit" 
-                                        class="text-base px-5 py-2.5 rounded-full border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500 transition duration-200 font-semibold">
+                                        class="text-xs px-4 py-1.5 rounded-full border border-white/30 text-white hover:bg-white hover:text-red-600 transition duration-200 font-semibold">
                                     Logout
                                 </button>
                             </form>
                         </div>
                     @else
-                        {{-- Login Button - Outline White --}}
                         <a href="{{ route('login') }}" 
-                           class="h-12 px-8 flex items-center rounded-full border-2 border-white text-white hover:bg-white hover:text-black transition duration-200 font-semibold">
+                           class="h-9 px-6 flex items-center text-xs rounded-full border border-white text-white hover:bg-white hover:text-red-600 transition duration-200 font-semibold">
                             Masuk
                         </a>
                         
-                        {{-- Register Button - Red Gradient --}}
                         <a href="{{ route('register') }}" 
-                           class="h-12 px-8 flex items-center rounded-full text-white font-bold shadow-md hover:scale-105 transition duration-200"
-                           style="background: linear-gradient(180deg, #DC2626 0%, #991B1B 100%);">
+                           class="h-9 px-6 flex items-center text-xs rounded-full text-white font-bold hover:scale-105 transition duration-200"
+                           style="background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%); box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);">
                             Daftar
                         </a>
                     @endauth
