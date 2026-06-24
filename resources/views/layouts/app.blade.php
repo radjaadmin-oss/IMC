@@ -82,8 +82,8 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center h-20">
                 
-                {{-- LEFT: Logo Area (Seamless Dark Fade) --}}
-                <div class="flex items-center" style="width: 280px; background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 50%, transparent 100%); margin-left: -24px; padding-left: 24px;">
+                {{-- LEFT: Logo Area (Seamless - No Box) --}}
+                <div class="flex items-center" style="width: 280px;">
                     <a href="{{ route('home') }}" class="flex items-center group py-4">
                         @php
                             $homepageSetting = \App\Models\HomepageSetting::first();
