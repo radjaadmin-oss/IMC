@@ -77,12 +77,12 @@
 </head>
 <body class="antialiased bg-white text-gray-900">
 
-    {{-- NAVBAR --}}
+    {{-- NAVBAR - MOCKUP DESIGN --}}
     <nav class="sticky top-0 z-[9999] bg-black backdrop-blur-xl border-b border-white/10" style="position: sticky !important; top: 0 !important; z-index: 9999 !important;">
-        <div class="max-w-[1280px] mx-auto px-6 relative z-10">
-            <div class="flex justify-between items-center h-[72px] relative z-10">
+        <div class="max-w-[1400px] mx-auto px-6 relative z-10">
+            <div class="flex justify-between items-center h-20 relative z-10">
                 
-                {{-- Logo Dinamis dari Database --}}
+                {{-- Logo Dinamis dari Database (LARGER) --}}
                 <a href="{{ route('home') }}" class="flex items-center group">
                     @php
                         $homepageSetting = \App\Models\HomepageSetting::first();
@@ -90,105 +90,96 @@
                     @endphp
                     
                     @if($logo && file_exists(public_path('storage/' . $logo)))
-                        {{-- Logo dari Database (HANYA GAMBAR) --}}
+                        {{-- Logo dari Database (LARGER SIZE) --}}
                         <img 
                             src="{{ asset('storage/' . $logo) }}" 
                             alt="Logo" 
-                            class="h-10 md:h-12 lg:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                            class="h-12 md:h-14 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                         >
                     @else
-                        {{-- Icon Tiket Emas (jika belum upload logo) --}}
-                        <div class="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <svg class="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-black" fill="currentColor" viewBox="0 0 20 20">
+                        {{-- Icon Tiket Emas (LARGER) --}}
+                        <div class="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-xl bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-black" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/>
                             </svg>
                         </div>
                     @endif
                 </a>
 
-                {{-- Menu Navigation --}}
-                <div class="hidden md:flex items-center gap-8">
+                {{-- Menu Navigation (CENTER) --}}
+                <div class="hidden lg:flex items-center gap-10 absolute left-1/2 transform -translate-x-1/2">
                     <a href="{{ route('home') }}" 
                        onclick="window.location.href='{{ route('home') }}'; return false;"
-                       class="text-sm font-medium text-gray-300 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('home') ? 'text-primary-600' : '' }}"
+                       class="text-base font-semibold text-white hover:text-primary-500 transition-colors cursor-pointer {{ request()->routeIs('home') ? 'text-primary-500' : '' }}"
                        style="pointer-events: auto !important; z-index: 99999 !important; position: relative !important;">
                         Beranda
                     </a>
                     <a href="{{ route('events.index') }}" 
                        onclick="window.location.href='{{ route('events.index') }}'; return false;"
-                       class="text-sm font-medium text-gray-300 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('events.*') ? 'text-primary-600' : '' }}"
+                       class="text-base font-semibold text-white hover:text-primary-500 transition-colors cursor-pointer {{ request()->routeIs('events.*') ? 'text-primary-500' : '' }}"
                        style="pointer-events: auto !important; z-index: 99999 !important; position: relative !important;">
                         Event
                     </a>
-                    <a href="#" class="text-sm font-medium text-gray-300 hover:text-white transition-colors cursor-pointer">
+                    <a href="#" class="text-base font-semibold text-white hover:text-primary-500 transition-colors cursor-pointer">
                         Kategori
                     </a>
-                    <a href="#" class="text-sm font-medium text-gray-300 hover:text-white transition-colors cursor-pointer">
+                    <a href="#" class="text-base font-semibold text-white hover:text-primary-500 transition-colors cursor-pointer">
                         Promo
                     </a>
-                    <a href="#" class="text-sm font-medium text-gray-300 hover:text-white transition-colors cursor-pointer">
+                    <a href="#" class="text-base font-semibold text-white hover:text-primary-500 transition-colors cursor-pointer">
                         Bantuan
                     </a>
-                    
-                    {{-- Menu Admin (hanya tampil jika user adalah admin) --}}
-                    @auth
-                        @if(auth()->user()->role === 'admin')
-                            <a href="{{ route('admin.index') }}" 
-                               onclick="window.location.href='{{ route('admin.index') }}'; return false;"
-                               class="text-sm font-medium text-gray-300 hover:text-white transition-colors cursor-pointer {{ request()->routeIs('admin.*') ? 'text-primary-600' : '' }}"
-                               style="pointer-events: auto !important; z-index: 99999 !important; position: relative !important;">
-                                Admin Dashboard
-                            </a>
-                        @endif
-                    @endauth
                 </div>
 
                 {{-- Right Actions --}}
                 <div class="flex items-center gap-4">
                     
-                    {{-- Search Box --}}
+                    {{-- Search Box (LARGER) --}}
                     <div class="hidden lg:block relative">
                         <input type="text" 
                                placeholder="Cari event..." 
-                               class="w-64 px-4 py-2 pl-10 bg-white/10 border border-white/20 rounded-xl text-sm text-white placeholder-gray-400 focus:outline-none focus:border-primary-600 focus:bg-white/15 transition-all">
-                        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="w-80 px-5 py-3 pl-12 bg-white/10 border border-white/20 rounded-xl text-base text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:bg-white/15 transition-all">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
 
                     @auth
-                        {{-- Tiket Saya --}}
+                        {{-- Tiket Saya Icon --}}
                         <a href="{{ route('orders.index') }}" 
-                           class="hidden md:block text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                            Tiket Saya
+                           class="hidden md:flex items-center gap-2 text-base font-semibold text-white hover:text-primary-500 transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z"/>
+                            </svg>
+                            <span>Tiket Saya</span>
                         </a>
 
                         {{-- User Info --}}
                         <div class="flex items-center gap-3">
                             <div class="flex items-center gap-2">
-                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-sm">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-base">
                                     {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                                 </div>
-                                <span class="hidden md:block text-sm text-white font-medium">{{ auth()->user()->name }}</span>
+                                <span class="hidden md:block text-base text-white font-semibold">{{ auth()->user()->name }}</span>
                             </div>
 
                             {{-- Logout Button --}}
                             <form action="{{ route('logout') }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit" 
-                                        class="text-sm px-4 py-2 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500 transition-all font-medium">
+                                        class="text-base px-5 py-2.5 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500 transition-all font-semibold">
                                     Logout
                                 </button>
                             </form>
                         </div>
                     @else
-                        {{-- Login & Register untuk Guest --}}
+                        {{-- Login & Register untuk Guest (STYLED PER MOCKUP) --}}
                         <a href="{{ route('login') }}" 
-                           class="text-sm px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all font-semibold">
+                           class="text-base px-6 py-2.5 rounded-xl border-2 border-white text-white hover:bg-white hover:text-black transition-all font-semibold">
                             Masuk
                         </a>
                         <a href="{{ route('register') }}" 
-                           class="text-sm px-5 py-2.5 rounded-xl bg-primary-600 text-white font-bold hover:bg-primary-700 transition-all shadow-lg hover:shadow-primary-500/30 hover:scale-105">
+                           class="text-base px-6 py-2.5 rounded-xl bg-primary-600 text-white font-bold hover:bg-primary-700 transition-all shadow-lg hover:shadow-primary-500/30 hover:scale-105">
                             Daftar
                         </a>
                     @endauth
