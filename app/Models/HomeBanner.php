@@ -15,13 +15,17 @@ class HomeBanner extends Model
         'desktop_image',
         'mobile_image',
         'event_id',
-        'status',
+        'is_active',
         'sort_order',
+        'start_date',
+        'end_date',
     ];
 
     protected $casts = [
-        'status' => 'string',
+        'is_active' => 'boolean',
         'sort_order' => 'integer',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     /**
@@ -37,7 +41,38 @@ class HomeBanner extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Accessor: Backward compatibility for 'status' attribute
+     * Maps is_active (boolean) to status (string)
+     */
+    public function getStatusAttribute(): string
+    {
+        return $this->is_active ? 'active' : 'inactive';
+    }
+
+    /**
+     * Check if banner is currently active and within date range
+     */
+    public function isCurrentlyActive(): bool
+    {
+        if (!$this->is_active) {
+            return false;
+        }
+
+        $now = now();
+
+        if ($this->start_date && $now->lt($this->start_date)) {
+            return false;
+        }
+
+        if ($this->end_date && $now->gt($this->end_date)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

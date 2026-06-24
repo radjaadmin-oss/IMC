@@ -157,17 +157,17 @@
             
             {{-- Status --}}
             <div>
-                <label for="status" class="block text-sm font-semibold text-white mb-2">
+                <label for="is_active" class="block text-sm font-semibold text-white mb-2">
                     Status <span class="text-red-400">*</span>
                 </label>
-                <select id="status" 
-                        name="status"
+                <select id="is_active" 
+                        name="is_active"
                         class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-[#F5C518] focus:ring-2 focus:ring-[#F5C518]/20 transition-all"
                         required>
-                    <option value="active" {{ old('status') === 'active' ? 'selected' : '' }}>Active (Tampil)</option>
-                    <option value="inactive" {{ old('status') === 'inactive' ? 'selected' : '' }}>Inactive (Sembunyi)</option>
+                    <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Active (Tampil)</option>
+                    <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>Inactive (Sembunyi)</option>
                 </select>
-                @error('status')
+                @error('is_active')
                     <p class="text-red-400 text-xs mt-2">{{ $message }}</p>
                 @enderror
             </div>

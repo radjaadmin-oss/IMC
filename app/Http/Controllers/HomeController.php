@@ -16,7 +16,7 @@ class HomeController extends Controller
 
         // LOAD BANNERS FROM DATABASE (from home_banners table)
         try {
-            $banners = HomeBanner::where('status', 'active')
+            $banners = HomeBanner::where('is_active', true)
                 ->orderBy('sort_order')
                 ->get();
         } catch (\Exception $e) {
