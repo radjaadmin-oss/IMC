@@ -77,9 +77,9 @@
 </head>
 <body class="antialiased bg-white text-gray-900">
 
-    {{-- NAVBAR - MOCKUP DESIGN (REVISED) --}}
-    <nav class="sticky top-0 z-[9999] bg-black backdrop-blur-xl border-b border-white/10 shadow-lg" style="position: sticky !important; top: 0 !important; z-index: 9999 !important;">
-        <div class="max-w-[1400px] mx-auto px-6">
+    {{-- NAVBAR - RED TO BLACK GRADIENT --}}
+    <nav class="sticky top-0 z-[9999] backdrop-blur-xl border-b border-red-900/20 shadow-lg" style="position: sticky !important; top: 0 !important; z-index: 9999 !important; background: linear-gradient(90deg, #B91C1C 0%, #DC2626 40%, #991B1B 70%, #000000 100%);">
+        <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center justify-between h-20">
                 
                 {{-- LEFT: Logo (25% width) --}}
